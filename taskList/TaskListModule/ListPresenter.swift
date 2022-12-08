@@ -7,22 +7,17 @@
 
 import Foundation
 
-protocol PresenterProtocol {
-    var interactor: InteractorProtocol { get set }
-    var router: RouterProtocol { get set }
-    var delegate: ViewDelegate? { get set }
-    
+protocol ListPresenterProtocol: PresenterProtocol {
     func loadData()
     func addButtonTapped()
 }
 
-final class ListPresenter: PresenterProtocol {
-    var interactor: InteractorProtocol
-    var router: RouterProtocol
-    
+final class ListPresenter: ListPresenterProtocol {
+    var interactor: ListInteractorProtocol
+    var router: ListRouterProtocol
     weak var delegate: ViewDelegate?
     
-    init(interactor: InteractorProtocol, router: RouterProtocol) {
+    init(interactor: ListInteractorProtocol, router: ListRouterProtocol) {
         self.interactor = interactor
         self.router = router
     }

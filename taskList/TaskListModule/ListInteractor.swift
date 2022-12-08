@@ -7,13 +7,15 @@
 
 import Foundation
 
-protocol InteractorProtocol {
-    func getData() -> [any DataProtocol]
+protocol ListInteractorProtocol: InteractorProtocol {
+    func getData() -> [any EntityProtocol]
 }
 
-final class ListInteractor: InteractorProtocol {
-    func getData() -> [any DataProtocol] {
-        var data: [any DataProtocol] = []
+final class ListInteractor: ListInteractorProtocol {
+    var persistance: PersistanceProtocol?
+    
+    func getData() -> [any EntityProtocol] {
+        var data: [any EntityProtocol] = []
         data.append(TaskList(listName: "Test1", listItems: []))
         data.append(TaskList(listName: "Test2", listItems: []))
         data.append(TaskList(listName: "Test3", listItems: []))

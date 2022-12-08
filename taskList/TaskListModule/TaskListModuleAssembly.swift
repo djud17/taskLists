@@ -7,15 +7,11 @@
 
 import UIKit
 
-protocol AssemblyProtocol {
-    func asemblyModule() -> ViewProtocol
-}
-
 final class TaskListModuleAssembly: AssemblyProtocol {
-    func asemblyModule() -> ViewProtocol {
-        let interactor: InteractorProtocol = ListInteractor()
-        var router: RouterProtocol = ListRouter(navigationControler: .init())
-        let presenter: PresenterProtocol = ListPresenter(interactor: interactor, router: router)
+    func asemblyModule() -> any ViewProtocol {
+        let interactor: ListInteractorProtocol = ListInteractor()
+        var router: ListRouterProtocol = ListRouter(navigationControler: .init())
+        let presenter: any ListPresenterProtocol = ListPresenter(interactor: interactor, router: router)
         let viewController = ListViewController(presenter: presenter)
         router.navigationControler = UINavigationController(rootViewController: viewController)
         return viewController

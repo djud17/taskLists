@@ -7,13 +7,7 @@
 
 import Foundation
 
-protocol DataProtocol {
-    associatedtype DataTask
-    var listName: String { get set }
-    var listItems: [DataTask] { get set }
-}
-
-struct TaskList: DataProtocol {
+struct TaskList: EntityProtocol {
     var listName: String
     var listItems: [Task]
 }

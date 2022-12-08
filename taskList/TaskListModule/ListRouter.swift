@@ -7,13 +7,11 @@
 
 import UIKit
 
-protocol RouterProtocol {
-    var navigationControler: UINavigationController? { get set }
-    
+protocol ListRouterProtocol: RouterProtocol {
     func openCreateTaskView()
 }
 
-final class ListRouter: RouterProtocol {
+final class ListRouter: ListRouterProtocol {
     weak var navigationControler: UINavigationController?
     
     init(navigationControler: UINavigationController) {
@@ -21,7 +19,8 @@ final class ListRouter: RouterProtocol {
     }
     
     func openCreateTaskView() {
-        let addViewController = AddEntityViewController()
-        navigationControler?.pushViewController(addViewController, animated: true)
+        let addEntityAssembly: AssemblyProtocol = AddEntityModuleAssembly()
+        let viewModule = addEntityAssembly.asemblyModule()
+        navigationControler?.pushViewController(viewModule, animated: true)
     }
 }

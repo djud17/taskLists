@@ -8,35 +8,34 @@
 import UIKit
 import SnapKit
 
-protocol ViewProtocol where Self: UIViewController {
-    var presenter: PresenterProtocol { get set }
-}
-
 protocol ViewDelegate: AnyObject {
-    func showData(dataArray: [any DataProtocol])
+    func showData(dataArray: [any EntityProtocol])
 }
 
 final class ListViewController: UIViewController, ViewProtocol {
-    var presenter: PresenterProtocol
-    private var itemsArray: [any DataProtocol] = [TaskList]()
+    var presenter: ListPresenterProtocol
+    private var itemsArray: [any EntityProtocol] = [TaskList]()
     
     private lazy var addListButton: UIButton = {
         let button = UIButton()
         button.setTitle("Добавить список", for: .normal)
         button.addTarget(self, action: #selector(addListButtonTapped), for: .touchUpInside)
         button.layer.cornerRadius = Constants.Sizes.cornerRadius
-        button.backgroundColor = Constants.Colors.blue
-        button.setTitleColor(Constants.Colors.white, for: .normal)
-        button.setTitleColor(Constants.Colors.white.withAlphaComponent(0.5), for: .highlighted)
+        button.backgroundColor = Constants.Colors.white
+        button.setTitleColor(Constants.Colors.blue, for: .normal)
+        button.setTitleColor(Constants.Colors.blue.withAlphaComponent(0.5), for: .highlighted)
         return button
     }()
     
     private lazy var listTableView: UITableView = {
         let tableView = UITableView()
+        tableView.layer.cornerRadius = Constants.Sizes.cornerRadius
+        tableView.separatorColor = Constants.Colors.blue
+        tableView.separatorInset = .zero
         return tableView
     }()
     
-    init(presenter: PresenterProtocol) {
+    init(presenter: any ListPresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
         self.presenter.delegate = self
@@ -59,7 +58,7 @@ final class ListViewController: UIViewController, ViewProtocol {
     }
     
     private func setupView() {
-        view.backgroundColor = .white
+        view.backgroundColor = Constants.Colors.blue
         
         view.addSubview(addListButton)
         view.addSubview(listTableView)
@@ -87,7 +86,7 @@ final class ListViewController: UIViewController, ViewProtocol {
 }
 
 extension ListViewController: ViewDelegate {
-    func showData(dataArray: [any DataProtocol]) {
+    func showData(dataArray: [any EntityProtocol]) {
         itemsArray = dataArray
         listTableView.reloadData()
     }
