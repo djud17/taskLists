@@ -15,7 +15,13 @@ struct Task: ItemProtocol {
     var itemName: String
 }
 
+protocol PersistanceProtocol {
+    
+}
 
+final class Persistance: PersistanceProtocol {
+    
+}
 
 
 /*
