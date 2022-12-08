@@ -12,7 +12,8 @@ protocol PresenterProtocol {
     var router: RouterProtocol { get set }
     var delegate: ViewDelegate? { get set }
     
-    func getDataFromPersistance()
+    func loadData()
+    func addButtonTapped()
 }
 
 final class ListPresenter: PresenterProtocol {
@@ -26,32 +27,12 @@ final class ListPresenter: PresenterProtocol {
         self.router = router
     }
     
-    func getDataFromPersistance() {
+    func loadData() {
         let dataArray = interactor.getData()
         delegate?.showData(dataArray: dataArray)
     }
-}
-
-/*
-class ProfilePresenter {
-
-    let interactor: ProfileInteractor
-    let router: ProfileRouter
-
-    weak var delegate: ProfileDelegate?
-
-    init(interactor: ProfileInteractor, router: ProfileRouter) {
-        self.interactor = interactor
-        self.router = router
-    }
-
-    func viewDidLoad() {
-        let name = interactor.name()
-        delegate?.update(entity: ProfileEntity(name: name))
-    }
-
-    func buttonTapped() {
-        router.openSettings()
+    
+    func addButtonTapped() {
+        router.openCreateTaskView()
     }
 }
-*/

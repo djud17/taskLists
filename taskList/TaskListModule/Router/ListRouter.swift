@@ -5,24 +5,23 @@
 //  Created by Давид Тоноян  on 08.12.2022.
 //
 
-import Foundation
+import UIKit
 
 protocol RouterProtocol {
+    var navigationControler: UINavigationController? { get set }
     
+    func openCreateTaskView()
 }
 
 final class ListRouter: RouterProtocol {
+    weak var navigationControler: UINavigationController?
     
-}
-
-/*
-class ProfileRouter {
-
-    weak var navigationController: UINavigationController?
-
-    func openSettings() {
-        let vc = SettingsViewController()
-        navigationController?.pushViewController(vc, animated: true)
+    init(navigationControler: UINavigationController) {
+        self.navigationControler = navigationControler
+    }
+    
+    func openCreateTaskView() {
+        let addViewController = AddEntityViewController()
+        navigationControler?.pushViewController(addViewController, animated: true)
     }
 }
-*/

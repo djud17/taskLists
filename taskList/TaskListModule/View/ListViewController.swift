@@ -8,11 +8,15 @@
 import UIKit
 import SnapKit
 
+protocol ViewProtocol where Self: UIViewController {
+    var presenter: PresenterProtocol { get set }
+}
+
 protocol ViewDelegate: AnyObject {
     func showData(dataArray: [any DataProtocol])
 }
 
-final class ListViewController: UIViewController {
+final class ListViewController: UIViewController, ViewProtocol {
     var presenter: PresenterProtocol
     private var itemsArray: [any DataProtocol] = [TaskList]()
     
@@ -23,6 +27,7 @@ final class ListViewController: UIViewController {
         button.layer.cornerRadius = Constants.Sizes.cornerRadius
         button.backgroundColor = Constants.Colors.blue
         button.setTitleColor(Constants.Colors.white, for: .normal)
+        button.setTitleColor(Constants.Colors.white.withAlphaComponent(0.5), for: .highlighted)
         return button
     }()
     
@@ -44,10 +49,17 @@ final class ListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupView()
+        configureTableView()
+        presenter.loadData()
+    }
+    
+    @objc private func addListButtonTapped() {
+        presenter.addButtonTapped()
+    }
+    
+    private func setupView() {
         view.backgroundColor = .white
-        listTableView.dataSource = self
-        listTableView.allowsSelection = false
-        listTableView.register(nibModels: [ListTableViewCellModel.self])
         
         view.addSubview(addListButton)
         view.addSubview(listTableView)
@@ -60,17 +72,17 @@ final class ListViewController: UIViewController {
         }
         
         listTableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(addListButton.snp.top).inset(20)
+            make.bottom.equalTo(addListButton.snp.top).offset(-20)
         }
-        
-        presenter.getDataFromPersistance()
     }
     
-    @objc private func addListButtonTapped() {
-        
+    private func configureTableView() {
+        listTableView.dataSource = self
+        listTableView.allowsSelection = false
+        listTableView.register(nibModels: [ListTableViewCellModel.self])
     }
 }
 
@@ -82,9 +94,6 @@ extension ListViewController: ViewDelegate {
 }
 
 extension ListViewController: UITableViewDataSource {
-    
-    // MARK: - Configure TableView
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         itemsArray.count
     }

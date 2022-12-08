@@ -13,16 +13,10 @@ protocol InteractorProtocol {
 
 final class ListInteractor: InteractorProtocol {
     func getData() -> [any DataProtocol] {
-        return []
+        var data: [any DataProtocol] = []
+        data.append(TaskList(listName: "Test1", listItems: []))
+        data.append(TaskList(listName: "Test2", listItems: []))
+        data.append(TaskList(listName: "Test3", listItems: []))
+        return data
     }
 }
-
-/*
-final class ProfileInteractor {
-    private var profileService: ProfileServiceProtocol = ProfileService()
-
-    func name() -> String {
-        profileService.profile.name
-    }
-}
-*/
