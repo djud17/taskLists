@@ -29,9 +29,9 @@ extension TaskTableViewCellModel: CellViewModel {
         cell.taskStatusLabel.text = {
             switch self.taskStatus {
             case .completed:
-                return "\u{25C9}"
+                return Constants.Symbols.filledPoint
             case .planned:
-                return "\u{25CB}"
+                return Constants.Symbols.emptyPoint
             }
         }()
         cell.taskStatusLabel.textColor = Constants.Colors.blue

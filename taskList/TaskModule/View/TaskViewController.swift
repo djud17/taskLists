@@ -22,7 +22,7 @@ final class TaskViewController: UIViewController, TaskViewProtocol {
         button.layer.cornerRadius = Constants.Sizes.cornerRadius
         button.backgroundColor = Constants.Colors.white
         button.setTitleColor(Constants.Colors.blue, for: .normal)
-        button.setTitleColor(Constants.Colors.blue.withAlphaComponent(0.5), for: .highlighted)
+        button.setTitleColor(Constants.Colors.lightBlue, for: .highlighted)
         return button
     }()
     
@@ -58,18 +58,19 @@ final class TaskViewController: UIViewController, TaskViewProtocol {
         view.addSubview(addTaskButton)
         view.addSubview(taskTableView)
         
+        let mediumOffset = Constants.Sizes.mediumOffset
         addTaskButton.snp.makeConstraints { make in
-            make.height.equalTo(40)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(20)
+            make.height.equalTo(Constants.Sizes.fieldHeight)
+            make.leading.equalToSuperview().offset(mediumOffset)
+            make.trailing.equalToSuperview().inset(mediumOffset)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(mediumOffset)
         }
         
         taskTableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(addTaskButton.snp.top).offset(-20)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(mediumOffset)
+            make.leading.equalToSuperview().offset(mediumOffset)
+            make.trailing.equalToSuperview().inset(mediumOffset)
+            make.bottom.equalTo(addTaskButton.snp.top).offset(-mediumOffset)
         }
     }
     

@@ -20,7 +20,7 @@ final class CoreDataConverter: ConverterProtocol {
         }
 
         let managedContext = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "TaskList")
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "List")
 
         var taskLists: [NSManagedObject] = []
         do {
@@ -40,7 +40,7 @@ final class CoreDataConverter: ConverterProtocol {
         
         for data in dataArray {
             let entityName = (data.value(forKey: "listName") as? String) ?? ""
-            let convertedEntity: any EntityProtocol = TaskListEntity(listName: entityName, listItems: [])
+            let convertedEntity: any EntityProtocol = ListEntity(listName: entityName, listItems: [])
             convertedData.append(convertedEntity)
         }
         

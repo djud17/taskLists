@@ -13,7 +13,7 @@ protocol EntityProtocol {
     var listItems: [EntityItem] { get set }
 }
 
-struct TaskListEntity: EntityProtocol {
+struct ListEntity: EntityProtocol {
     var listName: String
     var listItems: [Task]
 }

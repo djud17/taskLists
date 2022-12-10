@@ -14,6 +14,7 @@ protocol ListPresenterProtocol {
     func addButtonTapped()
     func deleteButtonTapped(withEntity entity: any EntityProtocol)
     func getStartScreen() -> UIViewController?
+    func cellTapped(withEntity entity: any EntityProtocol)
 }
 
 enum DataError: Error {
@@ -42,7 +43,7 @@ final class ListPresenter: ListPresenterProtocol {
                 throw DataError.noData
             } else {
                 self?.interactor.saveData(entityName: entityName)
-                let newEntity = TaskListEntity(listName: entityName, listItems: [])
+                let newEntity = ListEntity(listName: entityName, listItems: [])
                 self?.delegate?.updateData(withEntity: newEntity)
             }
         }
@@ -53,6 +54,14 @@ final class ListPresenter: ListPresenterProtocol {
     }
     
     func getStartScreen() -> UIViewController? {
-        router.navigationControler
+        router.navigationController
+    }
+    
+    func cellTapped(withEntity entity: any EntityProtocol) {
+        let taskModuleAssembly = TaskModuleAssembly(persistance: interactor.persistance,
+                                                    converter: interactor.converter,
+                                                    navigationController: router.navigationController)
+        let viewModule = taskModuleAssembly.asemblyTaskModule(forListEntity: entity)
+        router.openTaskModule(module: viewModule)
     }
 }

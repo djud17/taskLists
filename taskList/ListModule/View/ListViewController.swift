@@ -19,7 +19,11 @@ protocol ListViewProtocol where Self: UIViewController {
 
 final class ListViewController: UIViewController, ListViewProtocol {
     var presenter: ListPresenterProtocol
-    private var itemsArray: [any EntityProtocol] = [TaskListEntity]()
+    private var itemsArray: [any EntityProtocol] = [ListEntity]() {
+        didSet {
+            itemsArray.sort { $0.listName < $1.listName }
+        }
+    }
     
     private lazy var addListButton: UIButton = {
         let button = UIButton()
@@ -28,7 +32,7 @@ final class ListViewController: UIViewController, ListViewProtocol {
         button.layer.cornerRadius = Constants.Sizes.cornerRadius
         button.backgroundColor = Constants.Colors.white
         button.setTitleColor(Constants.Colors.blue, for: .normal)
-        button.setTitleColor(Constants.Colors.blue.withAlphaComponent(0.5), for: .highlighted)
+        button.setTitleColor(Constants.Colors.lightBlue, for: .highlighted)
         return button
     }()
     
@@ -69,31 +73,32 @@ final class ListViewController: UIViewController, ListViewProtocol {
     
     private func setupView() {
         navigationItem.title = "Task lists"
-        navigationController?.navigationBar.prefersLargeTitles = true
         
         view.backgroundColor = Constants.Colors.blue
         
         view.addSubview(addListButton)
         view.addSubview(listTableView)
         
+        let mediumOffset = Constants.Sizes.mediumOffset
+        
         addListButton.snp.makeConstraints { make in
-            make.height.equalTo(40)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(20)
+            make.height.equalTo(Constants.Sizes.fieldHeight)
+            make.leading.equalToSuperview().offset(mediumOffset)
+            make.trailing.equalToSuperview().inset(mediumOffset)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(mediumOffset)
         }
         
         listTableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(addListButton.snp.top).offset(-20)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(mediumOffset)
+            make.leading.equalToSuperview().offset(mediumOffset)
+            make.trailing.equalToSuperview().inset(mediumOffset)
+            make.bottom.equalTo(addListButton.snp.top).offset(-mediumOffset)
         }
     }
     
     private func configureTableView() {
         listTableView.dataSource = self
-        listTableView.allowsSelection = false
+        listTableView.delegate = self
         listTableView.register(nibModels: [ListTableViewCellModel.self])
     }
 }
@@ -106,7 +111,9 @@ extension ListViewController: ListViewDelegate {
     
     func updateData(withEntity entity: any EntityProtocol) {
         itemsArray.append(entity)
-        listTableView.reloadData()
+        let index = itemsArray.firstIndex { $0.listName == entity.listName } ?? 0
+        let indexPath = IndexPath(row: index, section: 0)
+        listTableView.insertRows(at: [indexPath], with: .fade)
     }
 }
 
@@ -134,5 +141,11 @@ extension ListViewController: UITableViewDelegate {
             itemsArray.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedEntity = itemsArray[indexPath.row]
+        presenter.cellTapped(withEntity: selectedEntity)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }

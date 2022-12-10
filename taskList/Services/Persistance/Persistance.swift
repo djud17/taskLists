@@ -28,7 +28,7 @@ final class CoreDataPersistance: PersistanceProtocol {
         
         let managedContext = appDelegate.persistentContainer.viewContext
         
-        guard let entity = NSEntityDescription.entity(forEntityName: "TaskList",
+        guard let entity = NSEntityDescription.entity(forEntityName: "List",
                                                       in: managedContext) else { return }
         
         let taskList = NSManagedObject(entity: entity, insertInto: managedContext)
@@ -45,7 +45,7 @@ final class CoreDataPersistance: PersistanceProtocol {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return [] }
         
         let managedContext = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "TaskList")
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "List")
         
         var taskLists: [NSManagedObject] = []
         do {

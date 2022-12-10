@@ -9,10 +9,6 @@ import UIKit
 
 final class ListTableViewCell: UITableViewCell {
     @IBOutlet weak var listNameLabel: UILabel!
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
 }
 
 struct ListTableViewCellModel {
@@ -22,5 +18,6 @@ struct ListTableViewCellModel {
 extension ListTableViewCellModel: CellViewModel {
     func setup(cell: ListTableViewCell) {
         cell.listNameLabel.text = listName
+        cell.listNameLabel.textColor = Constants.Colors.blue
     }
 }
