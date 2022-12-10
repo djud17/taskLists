@@ -7,13 +7,21 @@
 
 import UIKit
 
-final class TaskListModuleAssembly: AssemblyProtocol {
-    func asemblyModule() -> any ViewProtocol {
-        let interactor: ListInteractorProtocol = ListInteractor()
+protocol TaskListAssemblyProtocol {
+    func asemblyTaskListModule() -> ListViewProtocol
+}
+
+final class TaskListModuleAssembly: TaskListAssemblyProtocol {
+    func asemblyTaskListModule() -> ListViewProtocol {
+        let persistance = CoreDataPersistance()
+        let converter = CoreDataConverter()
+        let interactor: ListInteractorProtocol = ListInteractor(persistance: persistance,
+                                                                converter: converter)
         var router: ListRouterProtocol = ListRouter(navigationControler: .init())
-        let presenter: any ListPresenterProtocol = ListPresenter(interactor: interactor, router: router)
+        let presenter: ListPresenterProtocol = ListPresenter(interactor: interactor, router: router)
         let viewController = ListViewController(presenter: presenter)
         router.navigationControler = UINavigationController(rootViewController: viewController)
+        
         return viewController
     }
 }

@@ -5,17 +5,25 @@
 //  Created by Давид Тоноян  on 08.12.2022.
 //
 
-import Foundation
+import UIKit
 
-protocol ListPresenterProtocol: PresenterProtocol {
+protocol ListPresenterProtocol {
+    var delegate: ListViewDelegate? { get set }
+    
     func loadData()
     func addButtonTapped()
+    func deleteButtonTapped(withEntity entity: any EntityProtocol)
+    func getStartScreen() -> UIViewController?
+}
+
+enum DataError: Error {
+    case noData
 }
 
 final class ListPresenter: ListPresenterProtocol {
-    var interactor: ListInteractorProtocol
-    var router: ListRouterProtocol
-    weak var delegate: ViewDelegate?
+    private var interactor: ListInteractorProtocol
+    private var router: ListRouterProtocol
+    weak var delegate: ListViewDelegate?
     
     init(interactor: ListInteractorProtocol, router: ListRouterProtocol) {
         self.interactor = interactor
@@ -28,6 +36,23 @@ final class ListPresenter: ListPresenterProtocol {
     }
     
     func addButtonTapped() {
-        router.openCreateTaskView()
+        router.openCreateTaskAlert { [weak self] entityName in
+            let entityIsEmpty = self?.interactor.checkData(entityName: entityName) ?? true
+            if entityIsEmpty {
+                throw DataError.noData
+            } else {
+                self?.interactor.saveData(entityName: entityName)
+                let newEntity = TaskListEntity(listName: entityName, listItems: [])
+                self?.delegate?.updateData(withEntity: newEntity)
+            }
+        }
+    }
+    
+    func deleteButtonTapped(withEntity entity: any EntityProtocol) {
+        interactor.deleteData(entity: entity)
+    }
+    
+    func getStartScreen() -> UIViewController? {
+        router.navigationControler
     }
 }

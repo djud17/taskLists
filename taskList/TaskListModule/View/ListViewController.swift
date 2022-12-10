@@ -8,13 +8,18 @@
 import UIKit
 import SnapKit
 
-protocol ViewDelegate: AnyObject {
+protocol ListViewDelegate: AnyObject {
     func showData(dataArray: [any EntityProtocol])
+    func updateData(withEntity entity: any EntityProtocol)
 }
 
-final class ListViewController: UIViewController, ViewProtocol {
+protocol ListViewProtocol where Self: UIViewController {
+    var presenter: ListPresenterProtocol { get set }
+}
+
+final class ListViewController: UIViewController, ListViewProtocol {
     var presenter: ListPresenterProtocol
-    private var itemsArray: [any EntityProtocol] = [TaskList]()
+    private var itemsArray: [any EntityProtocol] = [TaskListEntity]()
     
     private lazy var addListButton: UIButton = {
         let button = UIButton()
@@ -35,7 +40,7 @@ final class ListViewController: UIViewController, ViewProtocol {
         return tableView
     }()
     
-    init(presenter: any ListPresenterProtocol) {
+    init(presenter: ListPresenterProtocol) {
         self.presenter = presenter
         super.init(nibName: nil, bundle: nil)
         self.presenter.delegate = self
@@ -50,6 +55,11 @@ final class ListViewController: UIViewController, ViewProtocol {
         
         setupView()
         configureTableView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         presenter.loadData()
     }
     
@@ -58,6 +68,9 @@ final class ListViewController: UIViewController, ViewProtocol {
     }
     
     private func setupView() {
+        navigationItem.title = "Task lists"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
         view.backgroundColor = Constants.Colors.blue
         
         view.addSubview(addListButton)
@@ -85,9 +98,14 @@ final class ListViewController: UIViewController, ViewProtocol {
     }
 }
 
-extension ListViewController: ViewDelegate {
+extension ListViewController: ListViewDelegate {
     func showData(dataArray: [any EntityProtocol]) {
         itemsArray = dataArray
+        listTableView.reloadData()
+    }
+    
+    func updateData(withEntity entity: any EntityProtocol) {
+        itemsArray.append(entity)
         listTableView.reloadData()
     }
 }
@@ -101,5 +119,20 @@ extension ListViewController: UITableViewDataSource {
         let listName = itemsArray[indexPath.row].listName
         let model: CellViewAnyModel = ListTableViewCellModel(listName: listName)
         return tableView.dequeueReusableCell(withModel: model, for: indexPath)
+    }
+}
+
+extension ListViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        true
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let entity = itemsArray[indexPath.row]
+            presenter.deleteButtonTapped(withEntity: entity)
+            itemsArray.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
     }
 }

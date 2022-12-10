@@ -7,8 +7,10 @@
 
 import UIKit
 
-protocol ListRouterProtocol: RouterProtocol {
-    func openCreateTaskView()
+protocol ListRouterProtocol {
+    var navigationControler: UINavigationController? { get set }
+    
+    func openCreateTaskAlert(completion: @escaping (String) throws -> Void)
 }
 
 final class ListRouter: ListRouterProtocol {
@@ -18,9 +20,28 @@ final class ListRouter: ListRouterProtocol {
         self.navigationControler = navigationControler
     }
     
-    func openCreateTaskView() {
-        let addEntityAssembly: AssemblyProtocol = AddEntityModuleAssembly()
-        let viewModule = addEntityAssembly.asemblyModule()
-        navigationControler?.pushViewController(viewModule, animated: true)
+    func openCreateTaskAlert(completion: @escaping (String) throws -> Void) {
+        let alertController = UIAlertController(title: "Create list", message: nil, preferredStyle: .alert)
+        alertController.addTextField { textField in
+            textField.placeholder = "Введите название"
+        }
+        let okButton = UIAlertAction(title: "Ok", style: .default) { [weak self] _ in
+            if let entityName = alertController.textFields?.first?.text {
+                do {
+                    try completion(entityName)
+                } catch {
+                    self?.showErrorMessage()
+                }
+            }
+        }
+        alertController.addAction(okButton)
+        navigationControler?.present(alertController, animated: true)
+    }
+    
+    private func showErrorMessage() {
+        let alertController = UIAlertController(title: "Error", message: "Введены некорректные данные", preferredStyle: .alert)
+        let okButton = UIAlertAction(title: "Ok", style: .default)
+        alertController.addAction(okButton)
+        navigationControler?.present(alertController, animated: true)
     }
 }
