@@ -5,35 +5,67 @@
 //  Created by Давид Тоноян  on 08.12.2022.
 //
 
-import Foundation
+import UIKit
+import CoreData
 
 protocol ItemProtocol {
     var itemName: String { get set }
 }
-        
+
 struct Task: ItemProtocol {
     var itemName: String
 }
 
 protocol PersistanceProtocol {
+    func writeToPersistance(entityName: String)
+    func readFromPersistance() -> [NSManagedObject]
+    func deleteFromPersistance(entity: NSManagedObject)
+}
+
+final class CoreDataPersistance: PersistanceProtocol {
+    func writeToPersistance(entityName: String) {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        
+        let managedContext = appDelegate.persistentContainer.viewContext
+        
+        guard let entity = NSEntityDescription.entity(forEntityName: "TaskList",
+                                                      in: managedContext) else { return }
+        
+        let taskList = NSManagedObject(entity: entity, insertInto: managedContext)
+        taskList.setValue(entityName, forKeyPath: "listName")
+        
+        do {
+            try managedContext.save()
+        } catch {
+            print("Could not save. \(error), \(error.localizedDescription)")
+        }
+    }
     
-}
-
-final class Persistance: PersistanceProtocol {
+    func readFromPersistance() -> [NSManagedObject] {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return [] }
+        
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "TaskList")
+        
+        var taskLists: [NSManagedObject] = []
+        do {
+            taskLists = try managedContext.fetch(fetchRequest)
+        } catch {
+            print("Could not fetch. \(error), \(error.localizedDescription)")
+        }
+        return taskLists
+    }
     
+    func deleteFromPersistance(entity: NSManagedObject) {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        
+        let managedContext = appDelegate.persistentContainer.viewContext
+        managedContext.delete(entity)
+        
+        do {
+            try managedContext.save()
+        } catch {
+            print("Could not delete entity. \(error), \(error.localizedDescription)")
+        }
+    }
 }
-
-
-/*
-protocol ProfileServiceProtocol {
-    var profile: Profile { get }
-}
-
-final class ProfileService: ProfileServiceProtocol {
-    lazy var profile: Profile = .init(name: "David")
-}
-
-struct Profile {
-    let name: String
-}
-*/
