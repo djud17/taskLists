@@ -6,14 +6,14 @@
 //
 
 import Foundation
+import CoreData
 
 protocol EntityProtocol {
-    associatedtype EntityItem
-    var listName: String { get set }
-    var listItems: [EntityItem] { get set }
+    var entityName: String { get set }
+    var entityItems: [ItemProtocol] { get set }
 }
 
 struct ListEntity: EntityProtocol {
-    var listName: String
-    var listItems: [Task]
+    var entityName: String = ""
+    var entityItems: [ItemProtocol] = []
 }

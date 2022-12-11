@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 
 protocol ListViewDelegate: AnyObject {
-    func showData(dataArray: [any EntityProtocol])
-    func updateData(withEntity entity: any EntityProtocol)
+    func showData()
+    func insertData(forIndex index: Int)
 }
 
 protocol ListViewProtocol where Self: UIViewController {
@@ -19,20 +19,11 @@ protocol ListViewProtocol where Self: UIViewController {
 
 final class ListViewController: UIViewController, ListViewProtocol {
     var presenter: ListPresenterProtocol
-    private var itemsArray: [any EntityProtocol] = [ListEntity]() {
-        didSet {
-            itemsArray.sort { $0.listName < $1.listName }
-        }
-    }
-    
-    private lazy var addListButton: UIButton = {
-        let button = UIButton()
+
+    private lazy var addListButton: AddButton = {
+        let button = AddButton()
         button.setTitle("Добавить список", for: .normal)
         button.addTarget(self, action: #selector(addListButtonTapped), for: .touchUpInside)
-        button.layer.cornerRadius = Constants.Sizes.cornerRadius
-        button.backgroundColor = Constants.Colors.white
-        button.setTitleColor(Constants.Colors.blue, for: .normal)
-        button.setTitleColor(Constants.Colors.lightBlue, for: .highlighted)
         return button
     }()
     
@@ -64,7 +55,7 @@ final class ListViewController: UIViewController, ListViewProtocol {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        presenter.loadData()
+        presenter.loadInitialData()
     }
     
     @objc private func addListButtonTapped() {
@@ -72,28 +63,12 @@ final class ListViewController: UIViewController, ListViewProtocol {
     }
     
     private func setupView() {
-        navigationItem.title = "Task lists"
+        navigationItem.title = presenter.getPageTitle()
         
         view.backgroundColor = Constants.Colors.blue
         
-        view.addSubview(addListButton)
-        view.addSubview(listTableView)
-        
-        let mediumOffset = Constants.Sizes.mediumOffset
-        
-        addListButton.snp.makeConstraints { make in
-            make.height.equalTo(Constants.Sizes.fieldHeight)
-            make.leading.equalToSuperview().offset(mediumOffset)
-            make.trailing.equalToSuperview().inset(mediumOffset)
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(mediumOffset)
-        }
-        
-        listTableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(mediumOffset)
-            make.leading.equalToSuperview().offset(mediumOffset)
-            make.trailing.equalToSuperview().inset(mediumOffset)
-            make.bottom.equalTo(addListButton.snp.top).offset(-mediumOffset)
-        }
+        setupButtonConstraints()
+        setupTableConstraints()
     }
     
     private func configureTableView() {
@@ -101,17 +76,41 @@ final class ListViewController: UIViewController, ListViewProtocol {
         listTableView.delegate = self
         listTableView.register(nibModels: [ListTableViewCellModel.self])
     }
+    
+    private func setupButtonConstraints() {
+        let mediumOffset = Constants.Sizes.mediumOffset
+        
+        view.addSubview(addListButton)
+        
+        addListButton.snp.makeConstraints { make in
+            make.height.equalTo(Constants.Sizes.fieldHeight)
+            make.leading.equalToSuperview().offset(mediumOffset)
+            make.trailing.equalToSuperview().inset(mediumOffset)
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(mediumOffset)
+        }
+    }
+    
+    private func setupTableConstraints() {
+        let mediumOffset = Constants.Sizes.mediumOffset
+        
+        view.addSubview(listTableView)
+        
+        listTableView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(mediumOffset)
+            make.leading.equalToSuperview().offset(mediumOffset)
+            make.trailing.equalToSuperview().inset(mediumOffset)
+            make.bottom.equalTo(addListButton.snp.top).offset(-mediumOffset)
+        }
+        
+    }
 }
 
 extension ListViewController: ListViewDelegate {
-    func showData(dataArray: [any EntityProtocol]) {
-        itemsArray = dataArray
+    func showData() {
         listTableView.reloadData()
     }
     
-    func updateData(withEntity entity: any EntityProtocol) {
-        itemsArray.append(entity)
-        let index = itemsArray.firstIndex { $0.listName == entity.listName } ?? 0
+    func insertData(forIndex index: Int) {
         let indexPath = IndexPath(row: index, section: 0)
         listTableView.insertRows(at: [indexPath], with: .fade)
     }
@@ -119,11 +118,12 @@ extension ListViewController: ListViewDelegate {
 
 extension ListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        itemsArray.count
+        presenter.getNumberOfItems()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let listName = itemsArray[indexPath.row].listName
+        let items = presenter.getDataModel()
+        let listName = items[indexPath.row].entityName
         let model: CellViewAnyModel = ListTableViewCellModel(listName: listName)
         return tableView.dequeueReusableCell(withModel: model, for: indexPath)
     }
@@ -136,15 +136,16 @@ extension ListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let entity = itemsArray[indexPath.row]
+            let items = presenter.getDataModel()
+            let entity = items[indexPath.row]
             presenter.deleteButtonTapped(withEntity: entity)
-            itemsArray.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            listTableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedEntity = itemsArray[indexPath.row]
+        let items = presenter.getDataModel()
+        let selectedEntity = items[indexPath.row]
         presenter.cellTapped(withEntity: selectedEntity)
         tableView.deselectRow(at: indexPath, animated: true)
     }

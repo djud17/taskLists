@@ -10,10 +10,15 @@ import UIKit
 protocol ListPresenterProtocol {
     var delegate: ListViewDelegate? { get set }
     
-    func loadData()
+    func getStartScreen() -> UIViewController?
+    func getPageTitle() -> String
+    
+    func loadInitialData()
+    func getNumberOfItems() -> Int
+    func getDataModel() -> [any EntityProtocol]
+    
     func addButtonTapped()
     func deleteButtonTapped(withEntity entity: any EntityProtocol)
-    func getStartScreen() -> UIViewController?
     func cellTapped(withEntity entity: any EntityProtocol)
 }
 
@@ -31,20 +36,32 @@ final class ListPresenter: ListPresenterProtocol {
         self.router = router
     }
     
-    func loadData() {
-        let dataArray = interactor.getData()
-        delegate?.showData(dataArray: dataArray)
+    func loadInitialData() {
+        interactor.loadDataFromPersistance()
+        delegate?.showData()
+    }
+    
+    func getDataModel() -> [any EntityProtocol] {
+        return interactor.getData()
+    }
+    
+    func getNumberOfItems() -> Int {
+        return interactor.numberOfItems
+    }
+    
+    func getPageTitle() -> String {
+        return "Task Lists"
     }
     
     func addButtonTapped() {
-        router.openCreateTaskAlert { [weak self] entityName in
-            let entityIsEmpty = self?.interactor.checkData(entityName: entityName) ?? true
-            if entityIsEmpty {
+        router.openCreateListAlert { [weak self] entityName in
+            let newEntity = ListEntity(entityName: entityName, entityItems: [])
+            let isBadEntity = self?.interactor.checkData(entity: newEntity) ?? true
+            if isBadEntity {
                 throw DataError.noData
             } else {
-                self?.interactor.saveData(entityName: entityName)
-                let newEntity = ListEntity(listName: entityName, listItems: [])
-                self?.delegate?.updateData(withEntity: newEntity)
+                let index = self?.interactor.updateData(entity: newEntity) ?? 0
+                self?.delegate?.insertData(forIndex: index)
             }
         }
     }
@@ -54,7 +71,7 @@ final class ListPresenter: ListPresenterProtocol {
     }
     
     func getStartScreen() -> UIViewController? {
-        router.navigationController
+        return router.navigationController
     }
     
     func cellTapped(withEntity entity: any EntityProtocol) {

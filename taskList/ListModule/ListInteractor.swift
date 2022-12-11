@@ -9,35 +9,57 @@ import Foundation
 
 protocol ListInteractorProtocol {
     var persistance: PersistanceProtocol { get set }
+    var numberOfItems: Int { get }
     
+    func loadDataFromPersistance() 
     func getData() -> [any EntityProtocol]
-    func checkData(entityName: String) -> Bool
-    func saveData(entityName: String)
+    func checkData(entity: any EntityProtocol) -> Bool
+    func updateData(entity: any EntityProtocol) -> Int
+    func saveData(entity: any EntityProtocol)
     func deleteData(entity: any EntityProtocol)
 }
 
 final class ListInteractor: ListInteractorProtocol {
     var persistance: PersistanceProtocol
+    private var itemsArray: [any EntityProtocol] = [ListEntity]() {
+        didSet {
+            itemsArray.sort { $0.entityName < $1.entityName }
+        }
+    }
+    var numberOfItems: Int {
+        return itemsArray.count
+    }
     
     init(persistance: PersistanceProtocol) {
         self.persistance = persistance
     }
     
-    func getData() -> [any EntityProtocol] {
-        let data: [any EntityProtocol] = persistance.readFromPersistance()
-        
-        return data
+    func loadDataFromPersistance() {
+        itemsArray = persistance.readFromPersistance()
     }
     
-    func checkData(entityName: String) -> Bool {
-        return entityName.isEmpty
+    func getData() -> [any EntityProtocol] {
+        return itemsArray
+    }
+    
+    func checkData(entity: any EntityProtocol) -> Bool {
+        return entity.entityName.isEmpty
     }
 
-    func saveData(entityName: String) {
-        persistance.writeToPersistance(entityName: entityName)
+    func saveData(entity: any EntityProtocol) {
+        persistance.writeToPersistance(entity: entity)
     }
     
     func deleteData(entity: any EntityProtocol) {
         persistance.deleteFromPersistance(entity: entity)
+        let index = itemsArray.firstIndex { $0.entityName == entity.entityName } ?? 0
+        itemsArray.remove(at: index)
+    }
+    
+    func updateData(entity: any EntityProtocol) -> Int {
+        saveData(entity: entity)
+        itemsArray.append(entity)
+        let index = itemsArray.firstIndex { $0.entityName == entity.entityName } ?? 0
+        return index
     }
 }
