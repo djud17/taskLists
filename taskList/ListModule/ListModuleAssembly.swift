@@ -14,9 +14,7 @@ protocol ListAssemblyProtocol {
 final class ListModuleAssembly: ListAssemblyProtocol {
     func asemblyListModule() -> ListViewProtocol {
         let persistance: PersistanceProtocol = CoreDataPersistance()
-        let converter: ConverterProtocol = CoreDataConverter()
-        let interactor: ListInteractorProtocol = ListInteractor(persistance: persistance,
-                                                                converter: converter)
+        let interactor: ListInteractorProtocol = ListInteractor(persistance: persistance)
         var router: ListRouterProtocol = ListRouter(navigationController: .init())
         let presenter: ListPresenterProtocol = ListPresenter(interactor: interactor, router: router)
         let viewController = ListViewController(presenter: presenter)

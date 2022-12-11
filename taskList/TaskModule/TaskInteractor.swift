@@ -9,7 +9,6 @@ import Foundation
 
 protocol TaskInteractorProtocol {
     var persistance: PersistanceProtocol { get set }
-    var converter: ConverterProtocol { get set }
     
 //    func getData() -> [any EntityProtocol]
 //    func checkData(entityName: String) -> Bool
@@ -19,10 +18,8 @@ protocol TaskInteractorProtocol {
 
 final class TaskInteractor: TaskInteractorProtocol {
     var persistance: PersistanceProtocol
-    var converter: ConverterProtocol
     
-    init(persistance: PersistanceProtocol, converter: ConverterProtocol) {
+    init(persistance: PersistanceProtocol) {
         self.persistance = persistance
-        self.converter = converter
     }
 }

@@ -29,7 +29,6 @@
 		25E8FE9029422BCF00846BEB /* ListEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E8FE8F29422BCF00846BEB /* ListEntity.swift */; };
 		25E8FE9229422BD700846BEB /* ListRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E8FE9129422BD700846BEB /* ListRouter.swift */; };
 		25E8FE9429422BE900846BEB /* Persistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E8FE9329422BE900846BEB /* Persistance.swift */; };
-		25E8FE9629422BF100846BEB /* Converter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E8FE9529422BF100846BEB /* Converter.swift */; };
 		25E8FE9829422EEB00846BEB /* ListModuleAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E8FE9729422EEB00846BEB /* ListModuleAssembly.swift */; };
 		25E8FEA02942362200846BEB /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E8FE9E2942362200846BEB /* ListTableViewCell.swift */; };
 		25E8FEA12942362200846BEB /* ListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25E8FE9F2942362200846BEB /* ListTableViewCell.xib */; };
@@ -86,7 +85,6 @@
 		25E8FE8F29422BCF00846BEB /* ListEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListEntity.swift; sourceTree = "<group>"; };
 		25E8FE9129422BD700846BEB /* ListRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRouter.swift; sourceTree = "<group>"; };
 		25E8FE9329422BE900846BEB /* Persistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistance.swift; sourceTree = "<group>"; };
-		25E8FE9529422BF100846BEB /* Converter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Converter.swift; sourceTree = "<group>"; };
 		25E8FE9729422EEB00846BEB /* ListModuleAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListModuleAssembly.swift; sourceTree = "<group>"; };
 		25E8FE9E2942362200846BEB /* ListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableViewCell.swift; sourceTree = "<group>"; };
 		25E8FE9F2942362200846BEB /* ListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListTableViewCell.xib; sourceTree = "<group>"; };
@@ -274,7 +272,6 @@
 		25E8FE8B29422B6900846BEB /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				25E8FE9529422BF100846BEB /* Converter.swift */,
 				25E8FEAD294249FC00846BEB /* Persistance */,
 			);
 			path = Services;
@@ -574,7 +571,6 @@
 				25E8FE5A2942251500846BEB /* taskList.xcdatamodeld in Sources */,
 				25E8FE9829422EEB00846BEB /* ListModuleAssembly.swift in Sources */,
 				25E8FEA02942362200846BEB /* ListTableViewCell.swift in Sources */,
-				25E8FE9629422BF100846BEB /* Converter.swift in Sources */,
 				255A1DF329453C08008231C5 /* TaskViewController.swift in Sources */,
 				25E8FE542942251500846BEB /* ListViewController.swift in Sources */,
 				25E8FE9429422BE900846BEB /* Persistance.swift in Sources */,

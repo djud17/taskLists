@@ -9,7 +9,6 @@ import Foundation
 
 protocol ListInteractorProtocol {
     var persistance: PersistanceProtocol { get set }
-    var converter: ConverterProtocol { get set }
     
     func getData() -> [any EntityProtocol]
     func checkData(entityName: String) -> Bool
@@ -19,16 +18,13 @@ protocol ListInteractorProtocol {
 
 final class ListInteractor: ListInteractorProtocol {
     var persistance: PersistanceProtocol
-    var converter: ConverterProtocol
     
-    init(persistance: PersistanceProtocol, converter: ConverterProtocol) {
+    init(persistance: PersistanceProtocol) {
         self.persistance = persistance
-        self.converter = converter
     }
     
     func getData() -> [any EntityProtocol] {
-        let arrayFromCoreData = persistance.readFromPersistance()
-        let data: [any EntityProtocol] = converter.convertFromPersistance(dataArray: arrayFromCoreData)
+        let data: [any EntityProtocol] = persistance.readFromPersistance()
         
         return data
     }
@@ -42,7 +38,6 @@ final class ListInteractor: ListInteractorProtocol {
     }
     
     func deleteData(entity: any EntityProtocol) {
-        guard let convertedEntity = converter.convertToPersistance(data: entity) else { return }
-        persistance.deleteFromPersistance(entity: convertedEntity)
+        persistance.deleteFromPersistance(entity: entity)
     }
 }

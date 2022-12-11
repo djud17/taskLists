@@ -59,7 +59,6 @@ final class ListPresenter: ListPresenterProtocol {
     
     func cellTapped(withEntity entity: any EntityProtocol) {
         let taskModuleAssembly = TaskModuleAssembly(persistance: interactor.persistance,
-                                                    converter: interactor.converter,
                                                     navigationController: router.navigationController)
         let viewModule = taskModuleAssembly.asemblyTaskModule(forListEntity: entity)
         router.openTaskModule(module: viewModule)

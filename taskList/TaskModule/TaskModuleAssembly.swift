@@ -13,18 +13,15 @@ protocol TaskModuleAssemblyProtocol {
 
 final class TaskModuleAssembly: TaskModuleAssemblyProtocol {
     var persistance: PersistanceProtocol
-    var converter: ConverterProtocol
     var navigationController: UINavigationController
     
-    init(persistance: PersistanceProtocol, converter: ConverterProtocol, navigationController: UINavigationController?) {
+    init(persistance: PersistanceProtocol, navigationController: UINavigationController?) {
         self.persistance = persistance
-        self.converter = converter
         self.navigationController = navigationController ?? UINavigationController()
     }
     
     func asemblyTaskModule(forListEntity listEntity: any EntityProtocol) -> TaskViewProtocol {
-        let interactor: TaskInteractorProtocol = TaskInteractor(persistance: persistance,
-                                                                converter: converter)
+        let interactor: TaskInteractorProtocol = TaskInteractor(persistance: persistance)
         let router: TaskRouterProtocol = TaskRouter(navigationController: navigationController)
         let presenter: TaskPresenterProtocol = TaskPresenter(interactor: interactor, router: router)
         let viewController = TaskViewController(presenter: presenter, taskList: listEntity)
