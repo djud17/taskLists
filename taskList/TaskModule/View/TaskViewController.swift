@@ -7,22 +7,22 @@
 
 import UIKit
 
+protocol TaskViewDelegate: AnyObject {
+    func showData()
+    func insertData(forIndex index: Int)
+}
+
 protocol TaskViewProtocol where Self: UIViewController {
     var presenter: TaskPresenterProtocol { get set }
 }
 
 final class TaskViewController: UIViewController, TaskViewProtocol {
     var presenter: TaskPresenterProtocol
-    var taskList: any EntityProtocol
     
-    private lazy var addTaskButton: UIButton = {
-        let button = UIButton()
+    private lazy var addTaskButton: AddButton = {
+        let button = AddButton()
         button.setTitle("Добавить задачу", for: .normal)
         button.addTarget(self, action: #selector(addTaskButtonTapped), for: .touchUpInside)
-        button.layer.cornerRadius = Constants.Sizes.cornerRadius
-        button.backgroundColor = Constants.Colors.white
-        button.setTitleColor(Constants.Colors.blue, for: .normal)
-        button.setTitleColor(Constants.Colors.lightBlue, for: .highlighted)
         return button
     }()
     
@@ -34,10 +34,10 @@ final class TaskViewController: UIViewController, TaskViewProtocol {
         return tableView
     }()
     
-    init(presenter: TaskPresenterProtocol, taskList: any EntityProtocol) {
+    init(presenter: TaskPresenterProtocol) {
         self.presenter = presenter
-        self.taskList = taskList
         super.init(nibName: nil, bundle: nil)
+        self.presenter.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -53,10 +53,25 @@ final class TaskViewController: UIViewController, TaskViewProtocol {
     private func setupView() {
         view.backgroundColor = Constants.Colors.blue
         
-        navigationItem.title = taskList.listName
+        navigationItem.title = presenter.getPageTitle()
         
+        configurateTableView()
+        setupButtonConstraints()
+        setupTableViewConstraints()
+    }
+    
+    @objc private func addTaskButtonTapped() {
+        presenter.addButtonTapped()
+    }
+    
+    private func configurateTableView() {
+        taskTableView.dataSource = self
+        taskTableView.delegate = self
+        taskTableView.register(nibModels: [TaskTableViewCellModel.self])
+    }
+    
+    private func setupButtonConstraints() {
         view.addSubview(addTaskButton)
-        view.addSubview(taskTableView)
         
         let mediumOffset = Constants.Sizes.mediumOffset
         addTaskButton.snp.makeConstraints { make in
@@ -65,7 +80,12 @@ final class TaskViewController: UIViewController, TaskViewProtocol {
             make.trailing.equalToSuperview().inset(mediumOffset)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(mediumOffset)
         }
+    }
+    
+    private func setupTableViewConstraints() {
+        view.addSubview(taskTableView)
         
+        let mediumOffset = Constants.Sizes.mediumOffset
         taskTableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(mediumOffset)
             make.leading.equalToSuperview().offset(mediumOffset)
@@ -73,8 +93,50 @@ final class TaskViewController: UIViewController, TaskViewProtocol {
             make.bottom.equalTo(addTaskButton.snp.top).offset(-mediumOffset)
         }
     }
+}
+
+extension TaskViewController: TaskViewDelegate {
+    func showData() {
+        taskTableView.reloadData()
+    }
     
-    @objc private func addTaskButtonTapped() {
-        print("add task")
+    func insertData(forIndex index: Int) {
+        let indexPath = IndexPath(row: index, section: 0)
+        taskTableView.insertRows(at: [indexPath], with: .fade)
+    }
+}
+
+extension TaskViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        presenter.getNumberOfItems()
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let items = presenter.getDataModel()
+        let taskName = items[indexPath.row].itemName
+        let taskStatus = items[indexPath.row].itemStatus
+        let model: CellViewAnyModel = TaskTableViewCellModel(taskStatus: taskStatus, taskName: taskName)
+        return tableView.dequeueReusableCell(withModel: model, for: indexPath)
+    }
+}
+
+extension TaskViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        true
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let items = presenter.getDataModel()
+            let entity = items[indexPath.row]
+            presenter.deleteButtonTapped(withItem: entity)
+            taskTableView.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        presenter.cellTapped(forIndex: indexPath.row)
+        tableView.deselectRow(at: indexPath, animated: true)
+        tableView.reloadRows(at: [indexPath], with: .fade)
     }
 }

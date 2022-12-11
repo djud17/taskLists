@@ -7,10 +7,17 @@
 
 import Foundation
 
-protocol ItemProtocol {
-    var itemName: String { get set }
+enum ItemStatus: String {
+    case planned
+    case completed
 }
 
-struct Task: ItemProtocol {
+protocol ItemProtocol {
+    var itemName: String { get set }
+    var itemStatus: ItemStatus { get set }
+}
+
+struct TaskItem: ItemProtocol {
     var itemName: String
+    var itemStatus: ItemStatus = .planned
 }

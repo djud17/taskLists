@@ -13,27 +13,27 @@ final class TaskTableViewCell: UITableViewCell {
 }
 
 struct TaskTableViewCellModel {
-    let taskStatus: TaskStatus
+    let taskStatus: ItemStatus
     let taskName: String
-    
-    enum TaskStatus {
-        case planned
-        case completed
-    }
 }
 
 extension TaskTableViewCellModel: CellViewModel {
     func setup(cell: TaskTableViewCell) {
+        let (color, taskStatus) = chooseStyle(itemStatus: self.taskStatus)
         cell.taskNameLabel.text = taskName
-        cell.taskNameLabel.textColor = Constants.Colors.blue
-        cell.taskStatusLabel.text = {
-            switch self.taskStatus {
-            case .completed:
-                return Constants.Symbols.filledPoint
-            case .planned:
-                return Constants.Symbols.emptyPoint
-            }
-        }()
+        cell.taskStatusLabel.text = taskStatus
+        cell.taskNameLabel.textColor = color
         cell.taskStatusLabel.textColor = Constants.Colors.blue
+    }
+    
+    private func chooseStyle(itemStatus: ItemStatus) -> (UIColor, String) {
+        var (color, status): (UIColor, String)
+        switch itemStatus {
+        case .completed:
+            (color, status) = (Constants.Colors.lightBlue, Constants.Symbols.filledPoint)
+        case .planned:
+            (color, status) = (Constants.Colors.blue, Constants.Symbols.emptyPoint)
+        }
+        return (color, status)
     }
 }

@@ -21,10 +21,11 @@ final class TaskModuleAssembly: TaskModuleAssemblyProtocol {
     }
     
     func asemblyTaskModule(forListEntity listEntity: any EntityProtocol) -> TaskViewProtocol {
-        let interactor: TaskInteractorProtocol = TaskInteractor(persistance: persistance)
+        let interactor: TaskInteractorProtocol = TaskInteractor(persistance: persistance,
+                                                                listEntity: listEntity)
         let router: TaskRouterProtocol = TaskRouter(navigationController: navigationController)
         let presenter: TaskPresenterProtocol = TaskPresenter(interactor: interactor, router: router)
-        let viewController = TaskViewController(presenter: presenter, taskList: listEntity)
+        let viewController = TaskViewController(presenter: presenter)
         
         return viewController
     }
