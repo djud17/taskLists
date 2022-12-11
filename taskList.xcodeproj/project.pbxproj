@@ -35,6 +35,9 @@
 		25E8FEA3294236AA00846BEB /* CellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E8FEA2294236AA00846BEB /* CellViewModel.swift */; };
 		25E8FEA529423B0C00846BEB /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E8FEA429423B0C00846BEB /* Constants.swift */; };
 		25E8FEA8294245CE00846BEB /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25E8FEA7294245CE00846BEB /* TableView.swift */; };
+		25F0D4D229462AF9001B27CC /* ListCoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F0D4CE29462AF9001B27CC /* ListCoreDataClass.swift */; };
+		25F0D4D429462AF9001B27CC /* TaskCoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F0D4CD29462AF9001B27CC /* TaskCoreDataClass.swift */; };
+		25F0D4D629466A67001B27CC /* AddButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F0D4D529466A67001B27CC /* AddButton.swift */; };
 		4BC38E0B20936AF6D2D9F549 /* Pods_taskListTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 759804BFB6055705B0E59663 /* Pods_taskListTests.framework */; };
 		67E7E50B11EF02B722A2A93F /* Pods_taskList_taskListUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0150F7BBB3AC80436F6806F /* Pods_taskList_taskListUITests.framework */; };
 		762BF0C81660C88229045AF0 /* Pods_taskList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E0CEAF33627AAE762E029F3 /* Pods_taskList.framework */; };
@@ -91,6 +94,9 @@
 		25E8FEA2294236AA00846BEB /* CellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellViewModel.swift; sourceTree = "<group>"; };
 		25E8FEA429423B0C00846BEB /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		25E8FEA7294245CE00846BEB /* TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
+		25F0D4CD29462AF9001B27CC /* TaskCoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TaskCoreDataClass.swift; path = "/Users/davidtonoyan/Desktop/Projects/Тестовые задания/taskList/taskList/Services/Persistance/TaskCoreDataClass.swift"; sourceTree = "<absolute>"; };
+		25F0D4CE29462AF9001B27CC /* ListCoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ListCoreDataClass.swift; path = "/Users/davidtonoyan/Desktop/Projects/Тестовые задания/taskList/taskList/Services/Persistance/ListCoreDataClass.swift"; sourceTree = "<absolute>"; };
+		25F0D4D529466A67001B27CC /* AddButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButton.swift; sourceTree = "<group>"; };
 		2E0CEAF33627AAE762E029F3 /* Pods_taskList.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_taskList.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		611A10EA3D7EAA5783264EA9 /* Pods-taskList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-taskList.release.xcconfig"; path = "Target Support Files/Pods-taskList/Pods-taskList.release.xcconfig"; sourceTree = "<group>"; };
 		6CA27F1ACBF414E726ADDBC2 /* Pods-taskList-taskListUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-taskList-taskListUITests.release.xcconfig"; path = "Target Support Files/Pods-taskList-taskListUITests/Pods-taskList-taskListUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -265,6 +271,7 @@
 			children = (
 				25E8FE99294235B900846BEB /* ListCell */,
 				25E8FE532942251500846BEB /* ListViewController.swift */,
+				25F0D4D529466A67001B27CC /* AddButton.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -298,6 +305,8 @@
 		25E8FEAD294249FC00846BEB /* Persistance */ = {
 			isa = PBXGroup;
 			children = (
+				25F0D4CD29462AF9001B27CC /* TaskCoreDataClass.swift */,
+				25F0D4CE29462AF9001B27CC /* ListCoreDataClass.swift */,
 				25E8FE582942251500846BEB /* taskList.xcdatamodeld */,
 				25E8FE9329422BE900846BEB /* Persistance.swift */,
 			);
@@ -569,6 +578,7 @@
 				25E8FE8E29422BBE00846BEB /* ListInteractor.swift in Sources */,
 				25E8FE9029422BCF00846BEB /* ListEntity.swift in Sources */,
 				25E8FE5A2942251500846BEB /* taskList.xcdatamodeld in Sources */,
+				25F0D4D229462AF9001B27CC /* ListCoreDataClass.swift in Sources */,
 				25E8FE9829422EEB00846BEB /* ListModuleAssembly.swift in Sources */,
 				25E8FEA02942362200846BEB /* ListTableViewCell.swift in Sources */,
 				255A1DF329453C08008231C5 /* TaskViewController.swift in Sources */,
@@ -576,6 +586,8 @@
 				25E8FE9429422BE900846BEB /* Persistance.swift in Sources */,
 				255A1DE629453775008231C5 /* TaskPresenter.swift in Sources */,
 				25E8FE502942251500846BEB /* AppDelegate.swift in Sources */,
+				25F0D4D429462AF9001B27CC /* TaskCoreDataClass.swift in Sources */,
+				25F0D4D629466A67001B27CC /* AddButton.swift in Sources */,
 				25E8FE522942251500846BEB /* SceneDelegate.swift in Sources */,
 				255A1DF0294537FB008231C5 /* TaskTableViewCell.swift in Sources */,
 				25E8FEA529423B0C00846BEB /* Constants.swift in Sources */,
