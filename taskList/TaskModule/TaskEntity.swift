@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+protocol ItemProtocol {
+    var itemName: String { get set }
+}
+
+struct Task: ItemProtocol {
+    var itemName: String
+}
