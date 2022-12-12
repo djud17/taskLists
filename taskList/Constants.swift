@@ -32,14 +32,4 @@ enum Constants {
         static let mediumOffset: CGFloat = 20
         static let largeOffset: CGFloat = 20
     }
-    
-    enum TestData {
-        static let testList = ListEntity(entityName: "New List", entityItems: [
-            TaskItem(itemName: "New Task \(Int.random(in: 0...10))"),
-            TaskItem(itemName: "New Task \(Int.random(in: 0...10))"),
-            TaskItem(itemName: "New Task \(Int.random(in: 0...10))")
-        ])
-        
-        static let testTask = TaskItem(itemName: "New Task \(Int.random(in: 0...10))")
-    }
 }
