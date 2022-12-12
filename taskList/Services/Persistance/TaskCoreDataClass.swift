@@ -17,4 +17,5 @@ public final class Task: NSManagedObject {
 
     @NSManaged public var taskName: String?
     @NSManaged public var taskStatus: String?
+    @NSManaged public var taskId: Int64
 }

@@ -8,12 +8,17 @@
 import UIKit
 import CoreData
 
-protocol PersistanceProtocol {
+protocol PersistanceProtocol: AnyObject {
     var converter: ConverterProtocol { get }
     
-    func writeToPersistance(entity: any EntityProtocol)
-    func readFromPersistance() -> [any EntityProtocol]
-    func deleteFromPersistance(entity: any EntityProtocol)
+    func writeToPersistance(entity: EntityProtocol)
+    func readFromPersistance() -> [EntityProtocol]
+    func deleteFromPersistance(entity: EntityProtocol)
+    
+    func insertItemToList(forList listEntityId: Int, toIndex index: Int, item: ItemProtocol)
+    func removeItemFromList(fromList listEntityId: Int, atIndex index: Int)
+    func appendItemToList(forList listEntityId: Int, item: ItemProtocol)
+    func removeItemFromList(fromList listEntityId: Int, item: ItemProtocol)
 }
 
 private enum PersistanceKey {
@@ -25,18 +30,20 @@ final class CoreDataPersistance: PersistanceProtocol {
     var converter: ConverterProtocol = CoreDataConverter()
     private let appDelegate = UIApplication.shared.delegate as? AppDelegate
     
-    func writeToPersistance(entity: any EntityProtocol) {
+    func writeToPersistance(entity: EntityProtocol) {
         guard let appDelegate else { return }
         
         let managedContext = appDelegate.persistentContainer.viewContext
         let list = List(context: managedContext)
         list.listName = entity.entityName
+        list.listId = Int64(entity.entityId)
         
         entity.entityItems.forEach { item in
-            let new = Task(context: managedContext)
-            new.taskName = item.itemName
-            new.taskStatus = item.itemStatus.rawValue
-            list.addToListItems(new)
+            let newTask = Task(context: managedContext)
+            newTask.taskName = item.itemName
+            newTask.taskStatus = item.itemStatus.rawValue
+            newTask.taskId = Int64(item.itemId)
+            list.addToListItems(newTask)
         }
         
         do {
@@ -46,7 +53,7 @@ final class CoreDataPersistance: PersistanceProtocol {
         }
     }
     
-    func readFromPersistance() -> [any EntityProtocol] {
+    func readFromPersistance() -> [EntityProtocol] {
         guard let appDelegate else { return [] }
         
         let managedContext = appDelegate.persistentContainer.viewContext
@@ -62,7 +69,7 @@ final class CoreDataPersistance: PersistanceProtocol {
         return converter.convertFromPersistance(dataArray: taskLists)
     }
     
-    func deleteFromPersistance(entity: any EntityProtocol) {
+    func deleteFromPersistance(entity: EntityProtocol) {
         guard let appDelegate,
               let coreDataEntity = converter.convertToPersistance(data: entity) else { return }
         
@@ -75,17 +82,138 @@ final class CoreDataPersistance: PersistanceProtocol {
             print("Could not delete entity. \(error), \(error.localizedDescription)")
         }
     }
+    
+    func insertItemToList(forList listEntityId: Int, toIndex index: Int, item: ItemProtocol) {
+        guard let appDelegate else { return }
+        
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: PersistanceKey.className)
+        
+        var taskLists: [NSManagedObject] = []
+        do {
+            taskLists = try managedContext.fetch(fetchRequest)
+        } catch {
+            print("Could not fetch. \(error), \(error.localizedDescription)")
+        }
+        
+        guard let taskLists = taskLists as? [List] else { return }
+        
+        if let list = taskLists.first(where: { $0.listId == listEntityId }) {
+            let newTask = Task(context: managedContext)
+            newTask.taskName = item.itemName
+            newTask.taskStatus = item.itemStatus.rawValue
+            newTask.taskId = Int64(item.itemId)
+            list.insertIntoListItems(newTask, at: index)
+        }
+        
+        do {
+            try managedContext.save()
+        } catch {
+            print("Could not save. \(error), \(error.localizedDescription)")
+        }
+    }
+    
+    func removeItemFromList(fromList listEntityId: Int, atIndex index: Int) {
+        guard let appDelegate else { return }
+        
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: PersistanceKey.className)
+        
+        var taskLists: [NSManagedObject] = []
+        do {
+            taskLists = try managedContext.fetch(fetchRequest)
+        } catch {
+            print("Could not fetch. \(error), \(error.localizedDescription)")
+        }
+        
+        guard let taskLists = taskLists as? [List] else { return }
+        
+        if let list = taskLists.first(where: { $0.listId == listEntityId }) {
+            list.removeFromListItems(at: index)
+        }
+        
+        do {
+            try managedContext.save()
+        } catch {
+            print("Could not save. \(error), \(error.localizedDescription)")
+        }
+    }
+    
+    func appendItemToList(forList listEntityId: Int, item: ItemProtocol) {
+        guard let appDelegate else { return }
+        
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: PersistanceKey.className)
+        
+        var taskLists: [NSManagedObject] = []
+        do {
+            taskLists = try managedContext.fetch(fetchRequest)
+        } catch {
+            print("Could not fetch. \(error), \(error.localizedDescription)")
+        }
+        
+        guard let taskLists = taskLists as? [List] else { return }
+        
+        if let list = taskLists.first(where: { $0.listId == listEntityId }) {
+            let newTask = Task(context: managedContext)
+            newTask.taskName = item.itemName
+            newTask.taskStatus = item.itemStatus.rawValue
+            newTask.taskId = Int64(item.itemId)
+            list.addToListItems(newTask)
+        }
+        
+        do {
+            try managedContext.save()
+        } catch {
+            print("Could not save. \(error), \(error.localizedDescription)")
+        }
+    }
+    
+    func removeItemFromList(fromList listEntityId: Int, item: ItemProtocol) {
+        guard let appDelegate else { return }
+        
+        let managedContext = appDelegate.persistentContainer.viewContext
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: PersistanceKey.className)
+        
+        var taskLists: [NSManagedObject] = []
+        do {
+            taskLists = try managedContext.fetch(fetchRequest)
+        } catch {
+            print("Could not fetch. \(error), \(error.localizedDescription)")
+        }
+        
+        guard let taskLists = taskLists as? [List] else { return }
+        
+        if let list = taskLists.first(where: { $0.listId == listEntityId }) {
+            guard let tasks = list.listItems else { return }
+            
+            for task in tasks {
+                if let task = task as? Task {
+                    if task.taskId == item.itemId {
+                        list.removeFromListItems(task)
+                        break
+                    }
+                }
+            }
+        }
+        
+        do {
+            try managedContext.save()
+        } catch {
+            print("Could not save. \(error), \(error.localizedDescription)")
+        }
+    }
 }
 
 // MARK: - CoreData Converter
 
 protocol ConverterProtocol {
-    func convertToPersistance(data: any EntityProtocol) -> NSManagedObject?
-    func convertFromPersistance(dataArray: [NSManagedObject]) -> [any EntityProtocol]
+    func convertToPersistance(data: EntityProtocol) -> NSManagedObject?
+    func convertFromPersistance(dataArray: [NSManagedObject]) -> [EntityProtocol]
 }
 
 final class CoreDataConverter: ConverterProtocol {
-    func convertToPersistance(data: any EntityProtocol) -> NSManagedObject? {
+    func convertToPersistance(data: EntityProtocol) -> NSManagedObject? {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return NSManagedObject()
         }
@@ -107,28 +235,31 @@ final class CoreDataConverter: ConverterProtocol {
         return convertedList
     }
     
-    func convertFromPersistance(dataArray: [NSManagedObject]) -> [any EntityProtocol] {
+    func convertFromPersistance(dataArray: [NSManagedObject]) -> [EntityProtocol] {
         guard let listArray = dataArray as? [List] else { return [] }
         
-        var convertedData: [any EntityProtocol] = []
+        var convertedData: [EntityProtocol] = []
         for list in listArray {
-            guard let items = list.listItems,
-                  let convertedEntity = createEntity(withName: list.listName, and: items) else { return [] }
+            guard let convertedEntity = createEntity(forList: list) else { return [] }
             convertedData.append(convertedEntity)
         }
         
         return convertedData
     }
     
-    private func createEntity(withName listName: String?, and items: NSOrderedSet) -> EntityProtocol? {
-        let listName = listName ?? ""
-        var convertedEntity: any EntityProtocol = ListEntity(entityName: listName, entityItems: [])
-        for item in items {
+    private func createEntity(forList list: List) -> EntityProtocol? {
+        let listName = list.listName ?? ""
+        let listItems = list.listItems ?? []
+        let listId = Int(list.listId)
+        let convertedEntity: EntityProtocol = ListEntity(entityName: listName, entityItems: [])
+        convertedEntity.entityId = listId
+        for item in listItems {
             guard let item = item as? Task else { return nil }
             
             let taskName = item.taskName ?? ""
             let taskStatus = item.taskStatus ?? ""
-            var convertedTask: any ItemProtocol = TaskItem(itemName: taskName)
+            let taskId = Int(item.taskId)
+            var convertedTask: ItemProtocol = TaskItem(itemName: taskName, itemId: taskId)
             convertedTask.itemStatus = ItemStatus(rawValue: taskStatus) ?? .planned
             convertedEntity.entityItems.append(convertedTask)
         }
