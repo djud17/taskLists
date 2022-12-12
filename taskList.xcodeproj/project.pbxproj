@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		254285EC2947218000A4C5F5 /* TaskModuleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254285EB2947218000A4C5F5 /* TaskModuleTests.swift */; };
+		254285EE2947660700A4C5F5 /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254285ED2947660700A4C5F5 /* ServiceLocator.swift */; };
 		255A1DE42945376B008231C5 /* TaskInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 255A1DE32945376B008231C5 /* TaskInteractor.swift */; };
 		255A1DE629453775008231C5 /* TaskPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 255A1DE529453775008231C5 /* TaskPresenter.swift */; };
 		255A1DE82945377D008231C5 /* TaskEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 255A1DE72945377D008231C5 /* TaskEntity.swift */; };
@@ -62,6 +64,8 @@
 
 /* Begin PBXFileReference section */
 		12C2BCEF7CCFBC6F5BEC3764 /* Pods-taskList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-taskList.debug.xcconfig"; path = "Target Support Files/Pods-taskList/Pods-taskList.debug.xcconfig"; sourceTree = "<group>"; };
+		254285EB2947218000A4C5F5 /* TaskModuleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskModuleTests.swift; sourceTree = "<group>"; };
+		254285ED2947660700A4C5F5 /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		255A1DE32945376B008231C5 /* TaskInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskInteractor.swift; sourceTree = "<group>"; };
 		255A1DE529453775008231C5 /* TaskPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskPresenter.swift; sourceTree = "<group>"; };
 		255A1DE72945377D008231C5 /* TaskEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskEntity.swift; sourceTree = "<group>"; };
@@ -158,6 +162,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		254285EA2947214400A4C5F5 /* TaskModuleTest */ = {
+			isa = PBXGroup;
+			children = (
+				254285EB2947218000A4C5F5 /* TaskModuleTests.swift */,
+			);
+			path = TaskModuleTest;
+			sourceTree = "<group>";
+		};
 		255A1DE12945370F008231C5 /* TaskModule */ = {
 			isa = PBXGroup;
 			children = (
@@ -230,6 +242,7 @@
 		25E8FE682942251600846BEB /* taskListTests */ = {
 			isa = PBXGroup;
 			children = (
+				254285EA2947214400A4C5F5 /* TaskModuleTest */,
 				25E8FE692942251600846BEB /* taskListTests.swift */,
 			);
 			path = taskListTests;
@@ -280,6 +293,7 @@
 			isa = PBXGroup;
 			children = (
 				25E8FEAD294249FC00846BEB /* Persistance */,
+				254285ED2947660700A4C5F5 /* ServiceLocator.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -588,6 +602,7 @@
 				25E8FE502942251500846BEB /* AppDelegate.swift in Sources */,
 				25F0D4D429462AF9001B27CC /* TaskCoreDataClass.swift in Sources */,
 				25F0D4D629466A67001B27CC /* AddButton.swift in Sources */,
+				254285EE2947660700A4C5F5 /* ServiceLocator.swift in Sources */,
 				25E8FE522942251500846BEB /* SceneDelegate.swift in Sources */,
 				255A1DF0294537FB008231C5 /* TaskTableViewCell.swift in Sources */,
 				25E8FEA529423B0C00846BEB /* Constants.swift in Sources */,
@@ -603,6 +618,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				254285EC2947218000A4C5F5 /* TaskModuleTests.swift in Sources */,
 				25E8FE6A2942251600846BEB /* taskListTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

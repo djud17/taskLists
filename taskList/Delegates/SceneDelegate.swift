@@ -14,9 +14,12 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: windowScene)
+        
+        let navigationController = ServiceLocator.navigationController
         let listAssembly: ListModuleAssembly = ListModuleAssembly()
-        let viewModule = listAssembly.asemblyListModule()
-        let navigationController = viewModule.presenter.getStartScreen()
+        let viewModule = listAssembly.asemblyListModule(navigationController: navigationController)
+        
+        navigationController.setViewControllers([viewModule], animated: false)
         window.rootViewController = navigationController
         self.window = window
         window.makeKeyAndVisible()
