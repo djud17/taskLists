@@ -7,19 +7,18 @@
 
 import UIKit
 
-protocol ListPresenterProtocol {
+protocol ListPresenterProtocol: AnyObject {
     var delegate: ListViewDelegate? { get set }
     
-    func getStartScreen() -> UIViewController?
     func getPageTitle() -> String
     
     func loadInitialData()
     func getNumberOfItems() -> Int
-    func getDataModel() -> [any EntityProtocol]
+    func getDataModel() -> [EntityProtocol]
     
     func addButtonTapped()
-    func deleteButtonTapped(withEntity entity: any EntityProtocol)
-    func cellTapped(withEntity entity: any EntityProtocol)
+    func deleteButtonTapped(withEntity entity: EntityProtocol)
+    func cellTapped(withEntity entity: EntityProtocol)
 }
 
 enum DataError: Error {
@@ -41,12 +40,12 @@ final class ListPresenter: ListPresenterProtocol {
         delegate?.showData()
     }
     
-    func getDataModel() -> [any EntityProtocol] {
-        return interactor.getData()
+    func getDataModel() -> [EntityProtocol] {
+        return interactor.itemsArray
     }
     
     func getNumberOfItems() -> Int {
-        return interactor.numberOfItems
+        return interactor.itemsArray.count
     }
     
     func getPageTitle() -> String {
@@ -66,17 +65,12 @@ final class ListPresenter: ListPresenterProtocol {
         }
     }
     
-    func deleteButtonTapped(withEntity entity: any EntityProtocol) {
+    func deleteButtonTapped(withEntity entity: EntityProtocol) {
         interactor.deleteData(entity: entity)
     }
     
-    func getStartScreen() -> UIViewController? {
-        return router.navigationController
-    }
-    
-    func cellTapped(withEntity entity: any EntityProtocol) {
-        let taskModuleAssembly = TaskModuleAssembly(persistance: interactor.persistance,
-                                                    navigationController: router.navigationController)
+    func cellTapped(withEntity entity: EntityProtocol) {
+        let taskModuleAssembly = TaskModuleAssembly()
         let viewModule = taskModuleAssembly.asemblyTaskModule(forListEntity: entity)
         router.openTaskModule(module: viewModule)
     }

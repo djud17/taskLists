@@ -8,25 +8,15 @@
 import UIKit
 
 protocol ListAssemblyProtocol {
-    func asemblyListModule() -> ListViewProtocol
+    func asemblyListModule(navigationController: UINavigationController) -> ListViewProtocol
 }
 
 final class ListModuleAssembly: ListAssemblyProtocol {
-    func asemblyListModule() -> ListViewProtocol {
-        let persistance: PersistanceProtocol = CoreDataPersistance()
-        let interactor: ListInteractorProtocol = ListInteractor(persistance: persistance)
-        var router: ListRouterProtocol = ListRouter(navigationController: .init())
+    func asemblyListModule(navigationController: UINavigationController) -> ListViewProtocol {
+        let interactor: ListInteractorProtocol = ListInteractor()
+        let router: ListRouterProtocol = ListRouter(navigationController: navigationController)
         let presenter: ListPresenterProtocol = ListPresenter(interactor: interactor, router: router)
         let viewController = ListViewController(presenter: presenter)
-        
-        let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.navigationBar.prefersLargeTitles = true
-        navigationController.navigationBar.largeTitleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: Constants.Colors.white
-        ]
-        navigationController.navigationBar.tintColor = Constants.Colors.white
-        
-        router.navigationController = navigationController
         
         return viewController
     }

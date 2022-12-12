@@ -8,14 +8,14 @@
 import UIKit
 
 protocol ListRouterProtocol {
-    var navigationController: UINavigationController? { get set }
+    // var navigationController: UINavigationController? { get set }
     
     func openCreateListAlert(completion: @escaping (String) throws -> Void)
     func openTaskModule(module: TaskViewProtocol)
 }
 
 final class ListRouter: ListRouterProtocol {
-    weak var navigationController: UINavigationController?
+    private weak var navigationController: UINavigationController?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController

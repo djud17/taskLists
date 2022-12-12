@@ -14,11 +14,11 @@ protocol ListViewDelegate: AnyObject {
 }
 
 protocol ListViewProtocol where Self: UIViewController {
-    var presenter: ListPresenterProtocol { get set }
+    
 }
 
 final class ListViewController: UIViewController, ListViewProtocol {
-    var presenter: ListPresenterProtocol
+    private let presenter: ListPresenterProtocol
 
     private lazy var addListButton: AddButton = {
         let button = AddButton()

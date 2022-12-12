@@ -8,12 +8,20 @@
 import Foundation
 import CoreData
 
-protocol EntityProtocol {
+protocol EntityProtocol: AnyObject {
     var entityName: String { get set }
     var entityItems: [ItemProtocol] { get set }
+    var entityId: Int { get set }
 }
 
-struct ListEntity: EntityProtocol {
-    var entityName: String = ""
-    var entityItems: [ItemProtocol] = []
+final class ListEntity: EntityProtocol {
+    var entityId: Int
+    var entityName: String
+    var entityItems: [ItemProtocol]
+    
+    init(entityName: String, entityItems: [ItemProtocol], entityId: Int = 0) {
+        self.entityName = entityName
+        self.entityItems = entityItems
+        self.entityId = entityId
+    }
 }

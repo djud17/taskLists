@@ -7,59 +7,56 @@
 
 import Foundation
 
-protocol ListInteractorProtocol {
-    var persistance: PersistanceProtocol { get set }
-    var numberOfItems: Int { get }
+protocol ListInteractorProtocol: AnyObject {
+    var itemsArray: [EntityProtocol] { get }
     
-    func loadDataFromPersistance() 
-    func getData() -> [any EntityProtocol]
-    func checkData(entity: any EntityProtocol) -> Bool
-    func updateData(entity: any EntityProtocol) -> Int
-    func saveData(entity: any EntityProtocol)
-    func deleteData(entity: any EntityProtocol)
+    func loadDataFromPersistance()
+    func checkData(entity: EntityProtocol) -> Bool
+    func updateData(entity: EntityProtocol) -> Int
+    func saveData(entity: EntityProtocol)
+    func deleteData(entity: EntityProtocol)
 }
 
 final class ListInteractor: ListInteractorProtocol {
-    var persistance: PersistanceProtocol
-    private var itemsArray: [any EntityProtocol] = [ListEntity]() {
-        didSet {
-            itemsArray.sort { $0.entityName < $1.entityName }
-        }
-    }
-    var numberOfItems: Int {
-        return itemsArray.count
-    }
-    
-    init(persistance: PersistanceProtocol) {
-        self.persistance = persistance
-    }
+    private lazy var persistance: PersistanceProtocol = ServiceLocator.persistance
+    private(set) var itemsArray: [EntityProtocol] = [ListEntity]()
     
     func loadDataFromPersistance() {
         itemsArray = persistance.readFromPersistance()
     }
     
-    func getData() -> [any EntityProtocol] {
-        return itemsArray
-    }
-    
-    func checkData(entity: any EntityProtocol) -> Bool {
+    func checkData(entity: EntityProtocol) -> Bool {
         return entity.entityName.isEmpty
     }
 
-    func saveData(entity: any EntityProtocol) {
+    func saveData(entity: EntityProtocol) {
         persistance.writeToPersistance(entity: entity)
     }
     
-    func deleteData(entity: any EntityProtocol) {
+    func deleteData(entity: EntityProtocol) {
         persistance.deleteFromPersistance(entity: entity)
         let index = itemsArray.firstIndex { $0.entityName == entity.entityName } ?? 0
         itemsArray.remove(at: index)
     }
     
-    func updateData(entity: any EntityProtocol) -> Int {
-        saveData(entity: entity)
+    func updateData(entity: EntityProtocol) -> Int {
         itemsArray.append(entity)
-        let index = itemsArray.firstIndex { $0.entityName == entity.entityName } ?? 0
+        itemsArray.sort { $0.entityName < $1.entityName }
+        let index = itemsArray.firstIndex { $0 === entity } ?? 0
+        itemsArray = updateIdItems()
         return index
+    }
+    
+    private func updateIdItems() -> [EntityProtocol] {
+        var itemsWithId = [EntityProtocol]()
+        
+        for (index, item) in itemsArray.enumerated() {
+            let newItem = item
+            newItem.entityId = index
+            itemsWithId.append(newItem)
+            persistance.deleteFromPersistance(entity: item)
+            persistance.writeToPersistance(entity: newItem)
+        }
+        return itemsWithId
     }
 }
