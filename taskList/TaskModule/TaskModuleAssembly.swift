@@ -8,19 +8,14 @@
 import UIKit
 
 protocol TaskModuleAssemblyProtocol {
-    func asemblyTaskModule(forListEntity listEntity: any EntityProtocol) -> TaskViewProtocol
+    func asemblyTaskModule(forListEntity listEntity: EntityProtocol) -> TaskViewProtocol
 }
 
 final class TaskModuleAssembly: TaskModuleAssemblyProtocol {
-    var persistance: PersistanceProtocol
-    var navigationController: UINavigationController
+    private let persistance: PersistanceProtocol = ServiceLocator.persistance
+    private let navigationController: UINavigationController = ServiceLocator.navigationController
     
-    init(persistance: PersistanceProtocol, navigationController: UINavigationController?) {
-        self.persistance = persistance
-        self.navigationController = navigationController ?? UINavigationController()
-    }
-    
-    func asemblyTaskModule(forListEntity listEntity: any EntityProtocol) -> TaskViewProtocol {
+    func asemblyTaskModule(forListEntity listEntity: EntityProtocol) -> TaskViewProtocol {
         let interactor: TaskInteractorProtocol = TaskInteractor(persistance: persistance,
                                                                 listEntity: listEntity)
         let router: TaskRouterProtocol = TaskRouter(navigationController: navigationController)

@@ -13,11 +13,11 @@ protocol TaskViewDelegate: AnyObject {
 }
 
 protocol TaskViewProtocol where Self: UIViewController {
-    var presenter: TaskPresenterProtocol { get set }
+    
 }
 
 final class TaskViewController: UIViewController, TaskViewProtocol {
-    var presenter: TaskPresenterProtocol
+    private let presenter: TaskPresenterProtocol
     
     private lazy var addTaskButton: AddButton = {
         let button = AddButton()

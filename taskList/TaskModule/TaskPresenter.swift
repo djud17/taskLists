@@ -7,14 +7,15 @@
 
 import Foundation
 
-protocol TaskPresenterProtocol {
+protocol TaskPresenterProtocol: AnyObject {
     var delegate: TaskViewDelegate? { get set }
     
-    func addButtonTapped()
     func getPageTitle() -> String
     func getNumberOfItems() -> Int
-    func getDataModel() -> [any ItemProtocol]
-    func deleteButtonTapped(withItem item: any ItemProtocol)
+    func getDataModel() -> [ItemProtocol]
+    
+    func addButtonTapped()
+    func deleteButtonTapped(withItem item: ItemProtocol)
     func cellTapped(forIndex index: Int)
 }
 
@@ -42,18 +43,18 @@ final class TaskPresenter: TaskPresenterProtocol {
     }
     
     func getPageTitle() -> String {
-        return interactor.itemTitle
+        return interactor.listEntity.entityName
     }
     
     func getNumberOfItems() -> Int {
-        return interactor.numberOfItems
+        return interactor.listEntity.entityItems.count
     }
     
-    func getDataModel() -> [any ItemProtocol] {
-        return interactor.getData()
+    func getDataModel() -> [ItemProtocol] {
+        return interactor.listEntity.entityItems
     }
     
-    func deleteButtonTapped(withItem item: any ItemProtocol) {
+    func deleteButtonTapped(withItem item: ItemProtocol) {
         interactor.deleteData(item: item)
     }
     

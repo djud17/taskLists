@@ -8,64 +8,61 @@
 import Foundation
 
 protocol TaskInteractorProtocol {
-    var persistance: PersistanceProtocol { get set }
-    var itemTitle: String { get }
-    var numberOfItems: Int { get }
+    var listEntity: EntityProtocol { get }
     
-    func getData() -> [any ItemProtocol]
-    func checkData(item: any ItemProtocol) -> Bool
-    func saveData()
-    func appendData(item: any ItemProtocol) -> Int
-    func deleteData(item: any ItemProtocol)
+    func checkData(item: ItemProtocol) -> Bool
+    func appendData(item: ItemProtocol) -> Int
+    func deleteData(item: ItemProtocol)
     func changeItemStatus(forIndex index: Int)
 }
 
 final class TaskInteractor: TaskInteractorProtocol {
-    var persistance: PersistanceProtocol
-    private var listEntity: EntityProtocol
-    var numberOfItems: Int {
-        listEntity.entityItems.count
-    }
-    var itemTitle: String {
-        listEntity.entityName
-    }
+    private var persistance: PersistanceProtocol
+    private(set) var listEntity: EntityProtocol
+    private lazy var listId = listEntity.entityId
     
     init(persistance: PersistanceProtocol, listEntity: EntityProtocol) {
         self.persistance = persistance
         self.listEntity = listEntity
     }
     
-    func checkData(item: any ItemProtocol) -> Bool {
+    func checkData(item: ItemProtocol) -> Bool {
         return item.itemName.isEmpty
     }
     
-    func saveData() {
-        persistance.deleteFromPersistance(entity: listEntity)
-        persistance.writeToPersistance(entity: listEntity)
-    }
-    
-    func getData() -> [any ItemProtocol] {
-        return listEntity.entityItems
-    }
-    
-    func appendData(item: any ItemProtocol) -> Int {
+    func appendData(item: ItemProtocol) -> Int {
         listEntity.entityItems.append(item)
         listEntity.entityItems.sort { $0.itemName < $1.itemName }
-        saveData()
-        let index = listEntity.entityItems.firstIndex { $0.itemName == item.itemName } ?? 0
+        let index = listEntity.entityItems.firstIndex { $0 === item } ?? 0
+        listEntity.entityItems = updateIdItems()
         return index
     }
     
-    func deleteData(item: any ItemProtocol) {
-        let index = listEntity.entityItems.firstIndex { $0.itemName == item.itemName } ?? 0
+    func deleteData(item: ItemProtocol) {
+        let index = listEntity.entityItems.firstIndex { $0.itemId == item.itemId } ?? 0
         listEntity.entityItems.remove(at: index)
-        saveData()
+        persistance.removeItemFromList(fromList: listId, atIndex: index)
     }
     
     func changeItemStatus(forIndex index: Int) {
         let item = listEntity.entityItems[index]
         let newStatus: ItemStatus = item.itemStatus == .planned ? .completed : .planned
         listEntity.entityItems[index].itemStatus = newStatus
-        saveData()
+        persistance.removeItemFromList(fromList: listId, atIndex: index)
+        persistance.insertItemToList(forList: listId, toIndex: index, item: listEntity.entityItems[index])
+    }
+    
+    private func updateIdItems() -> [ItemProtocol] {
+        var itemsWithId = [ItemProtocol]()
+        
+        for (index, item) in listEntity.entityItems.enumerated() {
+            let newItem = item
+            newItem.itemId = index
+            itemsWithId.append(newItem)
+            
+            persistance.removeItemFromList(fromList: listId, item: item)
+            persistance.appendItemToList(forList: listId, item: newItem)
+        }
+        return itemsWithId
     }
 }

@@ -8,13 +8,11 @@
 import UIKit
 
 protocol TaskRouterProtocol {
-    var navigationController: UINavigationController? { get set }
-    
     func openCreateTaskAlert(completion: @escaping (String) throws -> Void)
 }
 
 final class TaskRouter: TaskRouterProtocol {
-    var navigationController: UINavigationController?
+    private weak var navigationController: UINavigationController?
     
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController

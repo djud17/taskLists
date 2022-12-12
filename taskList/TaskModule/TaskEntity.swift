@@ -12,12 +12,20 @@ enum ItemStatus: String {
     case completed
 }
 
-protocol ItemProtocol {
+protocol ItemProtocol: AnyObject {
     var itemName: String { get set }
     var itemStatus: ItemStatus { get set }
+    var itemId: Int { get set }
 }
 
-struct TaskItem: ItemProtocol {
+final class TaskItem: ItemProtocol {
     var itemName: String
-    var itemStatus: ItemStatus = .planned
+    var itemStatus: ItemStatus
+    var itemId: Int
+    
+    init(itemName: String, itemStatus: ItemStatus = .planned, itemId: Int = 0) {
+        self.itemName = itemName
+        self.itemStatus = itemStatus
+        self.itemId = itemId
+    }
 }
