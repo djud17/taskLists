@@ -30,13 +30,13 @@ final class TaskPresenter: TaskPresenterProtocol {
     }
     
     func addButtonTapped() {
-        router.openCreateTaskAlert { [weak self] entityName in
-            let newEntity = TaskItem(itemName: entityName)
-            let isBadEntity = self?.interactor.checkData(item: newEntity) ?? true
-            if isBadEntity {
+        router.openCreateTaskAlert { [weak self] itemName in
+            let newItem = TaskItem(itemName: itemName)
+            let isBadItem = self?.interactor.checkData(item: newItem) ?? true
+            if isBadItem {
                 throw DataError.noData
             } else {
-                let index = self?.interactor.appendData(item: newEntity) ?? 0
+                let index = self?.interactor.appendData(item: newItem) ?? 0
                 self?.delegate?.insertData(forIndex: index)
             }
         }

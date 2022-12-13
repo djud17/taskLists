@@ -35,6 +35,7 @@ final class TaskInteractor: TaskInteractorProtocol {
         listEntity.entityItems.sort { $0.itemName < $1.itemName }
         let index = listEntity.entityItems.firstIndex { $0 === item } ?? 0
         listEntity.entityItems = updateIdItems()
+        
         return index
     }
     
@@ -59,10 +60,10 @@ final class TaskInteractor: TaskInteractorProtocol {
             let newItem = item
             newItem.itemId = index
             itemsWithId.append(newItem)
-            
             persistance.removeItemFromList(fromList: listId, item: item)
             persistance.appendItemToList(forList: listId, item: newItem)
         }
+        
         return itemsWithId
     }
 }

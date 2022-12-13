@@ -21,15 +21,15 @@ final class TaskViewController: UIViewController, TaskViewProtocol {
     
     private lazy var addTaskButton: AddButton = {
         let button = AddButton()
-        button.setTitle("Добавить задачу", for: .normal)
+        button.setTitle(Constants.Text.addTaskButtonTitle, for: .normal)
         button.addTarget(self, action: #selector(addTaskButtonTapped), for: .touchUpInside)
         return button
     }()
     
     private lazy var taskTableView: UITableView = {
         let tableView = UITableView()
-        tableView.layer.cornerRadius = Constants.Sizes.cornerRadius
-        tableView.separatorColor = Constants.Colors.blue
+        tableView.layer.cornerRadius = Constants.Size.cornerRadius
+        tableView.separatorColor = Constants.Color.blue
         tableView.separatorInset = .zero
         return tableView
     }()
@@ -51,7 +51,7 @@ final class TaskViewController: UIViewController, TaskViewProtocol {
     }
     
     private func setupView() {
-        view.backgroundColor = Constants.Colors.blue
+        view.backgroundColor = Constants.Color.blue
         
         navigationItem.title = presenter.getPageTitle()
         
@@ -71,11 +71,12 @@ final class TaskViewController: UIViewController, TaskViewProtocol {
     }
     
     private func setupButtonConstraints() {
+        let mediumOffset = Constants.Size.mediumOffset
+        
         view.addSubview(addTaskButton)
         
-        let mediumOffset = Constants.Sizes.mediumOffset
         addTaskButton.snp.makeConstraints { make in
-            make.height.equalTo(Constants.Sizes.fieldHeight)
+            make.height.equalTo(Constants.Size.fieldHeight)
             make.leading.equalToSuperview().offset(mediumOffset)
             make.trailing.equalToSuperview().inset(mediumOffset)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(mediumOffset)
@@ -83,9 +84,10 @@ final class TaskViewController: UIViewController, TaskViewProtocol {
     }
     
     private func setupTableViewConstraints() {
+        let mediumOffset = Constants.Size.mediumOffset
+        
         view.addSubview(taskTableView)
         
-        let mediumOffset = Constants.Sizes.mediumOffset
         taskTableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(mediumOffset)
             make.leading.equalToSuperview().offset(mediumOffset)
@@ -116,6 +118,7 @@ extension TaskViewController: UITableViewDataSource {
         let taskName = items[indexPath.row].itemName
         let taskStatus = items[indexPath.row].itemStatus
         let model: CellViewAnyModel = TaskTableViewCellModel(taskStatus: taskStatus, taskName: taskName)
+        
         return tableView.dequeueReusableCell(withModel: model, for: indexPath)
     }
 }
@@ -125,7 +128,9 @@ extension TaskViewController: UITableViewDelegate {
         true
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView,
+                   commit editingStyle: UITableViewCell.EditingStyle,
+                   forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let items = presenter.getDataModel()
             let entity = items[indexPath.row]

@@ -23,17 +23,19 @@ extension TaskTableViewCellModel: CellViewModel {
         cell.taskNameLabel.text = taskName
         cell.taskStatusLabel.text = taskStatus
         cell.taskNameLabel.textColor = color
-        cell.taskStatusLabel.textColor = Constants.Colors.blue
+        cell.taskStatusLabel.textColor = Constants.Color.blue
     }
     
     private func chooseStyle(itemStatus: ItemStatus) -> (UIColor, String) {
-        var (color, status): (UIColor, String)
-        switch itemStatus {
-        case .completed:
-            (color, status) = (Constants.Colors.lightBlue, Constants.Symbols.filledPoint)
-        case .planned:
-            (color, status) = (Constants.Colors.blue, Constants.Symbols.emptyPoint)
-        }
+        let (color, status): (UIColor, String) = {
+            switch itemStatus {
+            case .completed:
+                return (Constants.Color.lightBlue, Constants.Symbol.filledPoint)
+            case .planned:
+                return (Constants.Color.blue, Constants.Symbol.emptyPoint)
+            }
+        }()
+        
         return (color, status)
     }
 }
