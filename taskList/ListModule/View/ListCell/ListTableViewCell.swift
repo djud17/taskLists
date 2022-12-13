@@ -18,6 +18,6 @@ struct ListTableViewCellModel {
 extension ListTableViewCellModel: CellViewModel {
     func setup(cell: ListTableViewCell) {
         cell.listNameLabel.text = listName
-        cell.listNameLabel.textColor = Constants.Colors.blue
+        cell.listNameLabel.textColor = Constants.Color.blue
     }
 }

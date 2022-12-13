@@ -8,7 +8,7 @@
 import Foundation
 
 protocol ListInteractorProtocol: AnyObject {
-    var itemsArray: [EntityProtocol] { get }
+    var entityArray: [EntityProtocol] { get }
     
     func loadDataFromPersistance()
     func checkData(entity: EntityProtocol) -> Bool
@@ -18,11 +18,15 @@ protocol ListInteractorProtocol: AnyObject {
 }
 
 final class ListInteractor: ListInteractorProtocol {
-    private lazy var persistance: PersistanceProtocol = ServiceLocator.persistance
-    private(set) var itemsArray: [EntityProtocol] = [ListEntity]()
+    private let persistance: PersistanceProtocol
+    private(set) var entityArray: [EntityProtocol] = [ListEntity]()
+    
+    init(persistance: PersistanceProtocol) {
+        self.persistance = persistance
+    }
     
     func loadDataFromPersistance() {
-        itemsArray = persistance.readFromPersistance()
+        entityArray = persistance.readFromPersistance()
     }
     
     func checkData(entity: EntityProtocol) -> Bool {
@@ -35,28 +39,28 @@ final class ListInteractor: ListInteractorProtocol {
     
     func deleteData(entity: EntityProtocol) {
         persistance.deleteFromPersistance(entity: entity)
-        let index = itemsArray.firstIndex { $0.entityName == entity.entityName } ?? 0
-        itemsArray.remove(at: index)
+        let index = entityArray.firstIndex { $0.entityName == entity.entityName } ?? 0
+        entityArray.remove(at: index)
     }
     
     func updateData(entity: EntityProtocol) -> Int {
-        itemsArray.append(entity)
-        itemsArray.sort { $0.entityName < $1.entityName }
-        let index = itemsArray.firstIndex { $0 === entity } ?? 0
-        itemsArray = updateIdItems()
+        entityArray.append(entity)
+        entityArray.sort { $0.entityName < $1.entityName }
+        let index = entityArray.firstIndex { $0 === entity } ?? 0
+        entityArray = createArrayWithId()
         return index
     }
     
-    private func updateIdItems() -> [EntityProtocol] {
-        var itemsWithId = [EntityProtocol]()
+    private func createArrayWithId() -> [EntityProtocol] {
+        var entityArrayWithId = [EntityProtocol]()
         
-        for (index, item) in itemsArray.enumerated() {
-            let newItem = item
-            newItem.entityId = index
-            itemsWithId.append(newItem)
-            persistance.deleteFromPersistance(entity: item)
-            persistance.writeToPersistance(entity: newItem)
+        for (index, entity) in entityArray.enumerated() {
+            let newEntity = entity
+            newEntity.entityId = index
+            entityArrayWithId.append(newEntity)
+            persistance.deleteFromPersistance(entity: entity)
+            persistance.writeToPersistance(entity: newEntity)
         }
-        return itemsWithId
+        return entityArrayWithId
     }
 }

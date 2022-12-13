@@ -41,15 +41,15 @@ final class ListPresenter: ListPresenterProtocol {
     }
     
     func getDataModel() -> [EntityProtocol] {
-        return interactor.itemsArray
+        return interactor.entityArray
     }
     
     func getNumberOfItems() -> Int {
-        return interactor.itemsArray.count
+        return interactor.entityArray.count
     }
     
     func getPageTitle() -> String {
-        return "Task Lists"
+        return Constants.Text.mainPageTitle
     }
     
     func addButtonTapped() {

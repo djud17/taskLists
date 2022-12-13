@@ -22,15 +22,15 @@ final class ListViewController: UIViewController, ListViewProtocol {
 
     private lazy var addListButton: AddButton = {
         let button = AddButton()
-        button.setTitle("Добавить список", for: .normal)
+        button.setTitle(Constants.Text.addListButtonTitle, for: .normal)
         button.addTarget(self, action: #selector(addListButtonTapped), for: .touchUpInside)
         return button
     }()
     
     private lazy var listTableView: UITableView = {
         let tableView = UITableView()
-        tableView.layer.cornerRadius = Constants.Sizes.cornerRadius
-        tableView.separatorColor = Constants.Colors.blue
+        tableView.layer.cornerRadius = Constants.Size.cornerRadius
+        tableView.separatorColor = Constants.Color.blue
         tableView.separatorInset = .zero
         return tableView
     }()
@@ -65,7 +65,7 @@ final class ListViewController: UIViewController, ListViewProtocol {
     private func setupView() {
         navigationItem.title = presenter.getPageTitle()
         
-        view.backgroundColor = Constants.Colors.blue
+        view.backgroundColor = Constants.Color.blue
         
         setupButtonConstraints()
         setupTableConstraints()
@@ -78,12 +78,12 @@ final class ListViewController: UIViewController, ListViewProtocol {
     }
     
     private func setupButtonConstraints() {
-        let mediumOffset = Constants.Sizes.mediumOffset
+        let mediumOffset = Constants.Size.mediumOffset
         
         view.addSubview(addListButton)
         
         addListButton.snp.makeConstraints { make in
-            make.height.equalTo(Constants.Sizes.fieldHeight)
+            make.height.equalTo(Constants.Size.fieldHeight)
             make.leading.equalToSuperview().offset(mediumOffset)
             make.trailing.equalToSuperview().inset(mediumOffset)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(mediumOffset)
@@ -91,7 +91,7 @@ final class ListViewController: UIViewController, ListViewProtocol {
     }
     
     private func setupTableConstraints() {
-        let mediumOffset = Constants.Sizes.mediumOffset
+        let mediumOffset = Constants.Size.mediumOffset
         
         view.addSubview(listTableView)
         
@@ -125,6 +125,7 @@ extension ListViewController: UITableViewDataSource {
         let items = presenter.getDataModel()
         let listName = items[indexPath.row].entityName
         let model: CellViewAnyModel = ListTableViewCellModel(listName: listName)
+        
         return tableView.dequeueReusableCell(withModel: model, for: indexPath)
     }
 }
@@ -134,7 +135,9 @@ extension ListViewController: UITableViewDelegate {
         true
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView,
+                   commit editingStyle: UITableViewCell.EditingStyle,
+                   forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let items = presenter.getDataModel()
             let entity = items[indexPath.row]

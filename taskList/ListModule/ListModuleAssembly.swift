@@ -13,7 +13,7 @@ protocol ListAssemblyProtocol {
 
 final class ListModuleAssembly: ListAssemblyProtocol {
     func asemblyListModule(navigationController: UINavigationController) -> ListViewProtocol {
-        let interactor: ListInteractorProtocol = ListInteractor()
+        let interactor: ListInteractorProtocol = ListInteractor(persistance: ServiceLocator.persistance)
         let router: ListRouterProtocol = ListRouter(navigationController: navigationController)
         let presenter: ListPresenterProtocol = ListPresenter(interactor: interactor, router: router)
         let viewController = ListViewController(presenter: presenter)

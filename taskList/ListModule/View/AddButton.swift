@@ -10,10 +10,10 @@ import UIKit
 final class AddButton: UIButton {
     init() {
         super.init(frame: .zero)
-        layer.cornerRadius = Constants.Sizes.cornerRadius
-        backgroundColor = Constants.Colors.white
-        setTitleColor(Constants.Colors.blue, for: .normal)
-        setTitleColor(Constants.Colors.lightBlue, for: .highlighted)
+        layer.cornerRadius = Constants.Size.cornerRadius
+        backgroundColor = Constants.Color.white
+        setTitleColor(Constants.Color.blue, for: .normal)
+        setTitleColor(Constants.Color.lightBlue, for: .highlighted)
     }
     
     required init?(coder: NSCoder) {
