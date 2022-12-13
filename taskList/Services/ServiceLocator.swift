@@ -18,9 +18,9 @@ final class ServiceLocator: ServiceLocatorProtocol {
         let navigationController = UINavigationController()
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationBar.largeTitleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: Constants.Colors.white
+            NSAttributedString.Key.foregroundColor: Constants.Color.white
         ]
-        navigationController.navigationBar.tintColor = Constants.Colors.white
+        navigationController.navigationBar.tintColor = Constants.Color.white
         
         return navigationController
     }()
